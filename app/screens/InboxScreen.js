@@ -8,20 +8,6 @@ import colors from "../config/colors";
 
 import { getTotalUnread, getConversations } from "../services/httpservice";
 
-const test_messages = [
-	{
-		user_id: "59899999999",
-		username: "Juan Perez",
-		unread_count: 0,
-		last_message: {
-			to: "59899999999",
-			timestamp: 1658591943,
-			status: "read",
-			text: { body: "Hola!" },
-		},
-	},
-];
-
 export default function InboxScreen({ navigation }) {
 	const [messages, setMessages] = useState([]);
 	const [unreadTotal, setUnreadTotal] = useState(0);
@@ -35,7 +21,7 @@ export default function InboxScreen({ navigation }) {
 			if (result.ok)
 				setMessages(result.data);
 			else
-				setMessages(test_messages);
+				setMessages([]);
 		});
 	}, []);
 

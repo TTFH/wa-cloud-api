@@ -100,43 +100,6 @@ const categories = [
 	},
 ];
 
-const test_messages = [
-	{
-		message_id: "1",
-		to: true,
-		status: "read",
-		timestamp: 1658310000,
-		text: {
-			body: "Hola?",
-		},
-	},
-	{
-		message_id: "2",
-		to: true,
-		status: "read",
-		timestamp: 1658310100,
-		text: {
-			body: "Hay alguien?",
-		},
-	},
-	{
-		message_id: "3",
-		from: true,
-		timestamp: 1658310200,
-		text: {
-			body: "Hello World!",
-		},
-	},
-	{
-		message_id: "4",
-		from: true,
-		timestamp: 1658310300,
-		text: {
-			body: "Goodbye.",
-		},
-	},
-];
-
 function sendMessage(user_id, text, setInputText, messages, setMessages) {
 	if (text.length > 0) {
 		sendTextMessage(user_id, text).then(result => {
@@ -165,7 +128,7 @@ export default function ChatScreen({ route, navigation }) {
 			if (result.ok)
 				setMessages(result.data);
 			else
-				setMessages(test_messages);
+				setMessages([]);
 		});
 	}, []);
 
