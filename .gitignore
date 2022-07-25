@@ -1,0 +1,11 @@
+.expo/
+.expo-shared/
+.vscode/
+node_modules/
+babel.config.js
+package-lock.json
+
+Server/media/
+Server/node_modules/
+Server/database.json
+Server/ngrok.exe
