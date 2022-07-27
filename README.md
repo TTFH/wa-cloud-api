@@ -3,7 +3,7 @@
   
 **Warning:** This application contains JS code, use at your own risk.  
 
-## JS SUCKS!  
+## JS IS AWESOME!  
 Here is why:  
 https://thedailywtf.com/articles/bidding-on-security  
 https://www.destroyallsoftware.com/talks/wat  
