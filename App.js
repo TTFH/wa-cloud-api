@@ -3,7 +3,9 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import InboxScreen from "./app/screens/InboxScreen";
+import InboxMessengerScreen from "./app/screens/InboxMessengerScreen";
 import ChatScreen from "./app/screens/ChatScreen";
+import ChatMessengerScreen from "./app/screens/ChatMessengerScreen";
 import AddPhoneScreen from "./app/screens/AddPhoneScreen";
 
 // npm start
@@ -21,9 +23,11 @@ const Stack = createStackNavigator();
 export default function App() {
 	return (
 		<NavigationContainer>
-			<Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }} >
+			<Stack.Navigator initialRouteName="MessengerInbox" screenOptions={{ headerShown: false }} >
 				<Stack.Screen name="Home" component={InboxScreen} />
+				<Stack.Screen name="MessengerInbox" component={InboxMessengerScreen} />
 				<Stack.Screen name="Chat" component={ChatScreen} />
+				<Stack.Screen name="ChatMessenger" component={ChatMessengerScreen} />
 				<Stack.Screen name="AddPhone" component={AddPhoneScreen} />
 			</Stack.Navigator>
 		</NavigationContainer>

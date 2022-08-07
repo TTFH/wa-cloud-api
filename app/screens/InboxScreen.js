@@ -4,9 +4,112 @@ import { StyleSheet, FlatList, Image, View, TouchableOpacity } from "react-nativ
 import Card from "../components/Card";
 import Header from "../components/Header";
 import Screen from "../components/Screen";
+import CardMessenger from "../components/CardMessenger";
 import colors from "../config/colors";
 
 import { getTotalUnread, getConversations } from "../services/httpservice";
+
+const test_messages = [
+	{
+		user_id: "-2",
+		username: "Test Page",
+		profile_pic: require("../assets/test_page.png"),
+		channel: "messenger",
+		unread_count: 17,
+		last_message: {
+			from: "59899999999",
+			timestamp: 1659646749,
+			status: "read",
+			text: { body: "Prueba final" },
+		},
+	},
+	{
+		user_id: "-1",
+		username: "Test Messenger",
+		profile_pic: require("../assets/test_profile.png"),
+		channel: "messenger",
+		unread_count: 0,
+		last_message: {
+			to: "59899999999",
+			timestamp: 1659645749,
+			status: "read",
+			text: { body: "Hola" },
+		},
+	},
+	{
+		user_id: "0",
+		username: "Solo tú",
+		profile_pic: require("../assets/cat.jpg"),
+		channel: "messenger",
+		unread_count: 0,
+		last_message: {
+			to: "59899999999",
+			timestamp: 1659644749,
+			status: "delivered",
+			text: { body: "It's me" },
+		},
+	},
+	{
+		user_id: "1",
+		username: "Juan Perez",
+		channel: "messenger",
+		unread_count: 0,
+		last_message: {
+			to: "59899999999",
+			timestamp: 1658791943,
+			status: "sent",
+			text: { body: "Hola!" },
+		},
+	},
+	{
+		user_id: "2",
+		username: "Tommy",
+		channel: "whatsapp",
+		unread_count: 0,
+		last_message: {
+			from: "59899999999",
+			timestamp: 1658591943,
+			status: "read",
+			image: { caption: "Look at this kitten" },
+		},
+	},
+	{
+		user_id: "3",
+		username: "Ninja Turbo",
+		channel: "whatsapp",
+		unread_count: 0,
+		last_message: {
+			from: "59899999999",
+			timestamp: 1658491943,
+			status: "delivered",
+			video: { caption: "Do you love this song?" },
+		},
+	},
+	{
+		user_id: "4",
+		username: "Jose Maria Rodriguez",
+		channel: "whatsapp",
+		unread_count: 0,
+		last_message: {
+			from: "59899999999",
+			timestamp: 1658391943,
+			status: "read",
+			location: { name: "This place sucks" },
+		},
+	},
+	{
+		user_id: "5",
+		username: "Test Number",
+		channel: "whatsapp",
+		unread_count: 0,
+		last_message: {
+			to: "59899999999",
+			timestamp: 1658291943,
+			status: "delivered",
+			text: { body: "Hello World" },
+		},
+	},
+];
 
 export default function InboxScreen({ navigation }) {
 	const [messages, setMessages] = useState([]);
@@ -21,7 +124,7 @@ export default function InboxScreen({ navigation }) {
 			if (result.ok)
 				setMessages(result.data);
 			else
-				setMessages([]);
+				setMessages(test_messages);
 		});
 	}, []);
 
@@ -33,10 +136,16 @@ export default function InboxScreen({ navigation }) {
 					data={messages}
 					keyExtractor={(message) => message.user_id}
 					renderItem={({ item }) => (
-						<Card
-							{...item}
-							onPress={() => navigation.navigate("Chat", { user_id: item.user_id, username: item.username })}
-						/>
+						<>
+							{item.channel === "whatsapp" && <Card
+								{...item}
+								onPress={() => navigation.navigate("Chat", { user_id: item.user_id, username: item.username })}
+							/>}
+							{/*item.channel === "messenger" && <CardMessenger
+								{...item}
+								onPress={() => navigation.navigate("ChatMessenger", { user_id: item.user_id, profile_pic: item.profile_pic, username: item.username })}
+					/>*/}
+						</>
 					)}
 				/>
 				<TouchableOpacity onPress={() => navigation.navigate("AddPhone")}>
@@ -53,7 +162,7 @@ export default function InboxScreen({ navigation }) {
 
 const styles = StyleSheet.create({
 	screen: {
-		padding: 20,
+		padding: 15,
 	},
 	chatCircle: {
 		alignItems: "center",

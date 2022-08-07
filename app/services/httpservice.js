@@ -16,16 +16,16 @@ function getMessages(user_id) {
 	return api.get("messages", { user_id });
 }
 
-function sendTextMessage(user_id, text) {
-	return api.post("message", { user_id, text });
+function sendTextMessage(channel, user_id, text) {
+	return api.post("message", { channel, user_id, text });
 }
 
-function addPhoneNumber(number) {
-	return api.put("add_user", { number });
+function addPhoneNumber(number) { // TODO: add channel, rename to contact
+	return api.put("add_contact", { number });
 }
 
 function markAsRead(message_id) {
-	return api.put("markread", { message_id });
+	return api.put("mark_read", { message_id });
 }
 
 export {

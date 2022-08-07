@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { FlatList, View, Text, Image, StyleSheet, ImageBackground, TextInput, TouchableOpacity } from "react-native";
+import { FlatList, View, Text, Image, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 
 import Screen from "../components/Screen";
-import DialogTo from "../components/DialogTo";
-import AppPicker from "../components/AppPicker";
-import ChatHeader from "../components/ChatHeader";
-import DialogFrom from "../components/DialogFrom";
+import DialogToMessenger from "../components/DialogToMessenger";
+import ChatHeaderMessenger from "../components/ChatHeaderMessenger";
+import DialogFromMessenger from "../components/DialogFromMessenger";
 import colors from "../config/colors";
 
 import { getMessages, sendTextMessage } from "../services/httpservice";
 
-const send = require("../assets/send.png");
+const send = require("../assets/send_fb.png");
 
 function formatDate(timestamp) {
 	const sendDate = new Date(timestamp * 1000);
@@ -33,72 +32,6 @@ function isSameDay(timestamp1, timestamp2) {
 	const date2 = new Date(timestamp2 * 1000);
 	return date1.getDate() === date2.getDate() && date1.getMonth() === date2.getMonth() && date1.getFullYear() === date2.getFullYear();
 }
-
-const categories = [
-	{
-		colorTop: "#5157AE",
-		colorBottom: "#5F66CD",
-		icon: "file-document",
-		label: "Documento",
-		value: 1,
-	},
-	{
-		colorTop: "#D3396D",
-		colorBottom: "#EC407A",
-		icon: "video",
-		label: "Video",
-		value: 2,
-	},
-	{
-		colorTop: "#AC44CF",
-		colorBottom: "#BF59CF",
-		icon: "image",
-		label: "Imagen",
-		value: 3,
-	},
-	{
-		colorTop: "#E55E31",
-		colorBottom: "#FC6634",
-		icon: "music",
-		label: "Audio",
-		value: 4,
-	},
-	{
-		colorTop: "#1D9B51",
-		colorBottom: "#20A856",
-		icon: "map",
-		label: "Ubicación",
-		value: 5,
-	},
-	{
-		colorTop: "#0795DC",
-		colorBottom: "#0EABF4",
-		icon: "contacts",
-		label: "Contacto",
-		value: 6,
-	},
-	{
-		colorTop: "#0063CB",
-		colorBottom: "#0070E6",
-		icon: "sticker",
-		label: "Sticker",
-		value: 7,
-	},
-	{
-		colorTop: "#FFA800",
-		colorBottom: "#FFBC38",
-		icon: "gesture-tap-button",
-		label: "Interactivo",
-		value: 8,
-	},
-	{
-		colorTop: "#5525AC",
-		colorBottom: "#673AB7",
-		icon: "message-text",
-		label: "Plantilla",
-		value: 9,
-	},
-];
 
 const test_messages = [
 	{
@@ -139,7 +72,7 @@ const test_messages = [
 
 function sendMessage(user_id, text, setInputText, messages, setMessages) {
 	if (text.length > 0) {
-		sendTextMessage("whatsapp", user_id, text).then(result => {
+		sendTextMessage("messenger", user_id, text).then(result => {
 			const message = {
 				message_id: result.ok ? result.data : messages.length + 1,
 				to: user_id,
@@ -155,8 +88,8 @@ function sendMessage(user_id, text, setInputText, messages, setMessages) {
 	}
 }
 
-export default function ChatScreen({ route, navigation }) {
-	const { user_id, username } = route.params;
+export default function ChatMessengerScreen({ route, navigation }) {
+	const { user_id, username, profile_pic } = route.params;
 	const [messages, setMessages] = useState([]);
 	const [text, setText] = useState("");
 
@@ -171,10 +104,7 @@ export default function ChatScreen({ route, navigation }) {
 
 	return (
 		<Screen style={styles.background}>
-			<ChatHeader navigation={navigation} username={username} />
-			<ImageBackground style={styles.backgroundImage}
-				source={require("../assets/background.png")}
-			/>
+			<ChatHeaderMessenger navigation={navigation} username={username} profile_pic={profile_pic} />
 			<View style={styles.chatContainer}>
 				<View >
 					<FlatList
@@ -186,15 +116,15 @@ export default function ChatScreen({ route, navigation }) {
 								{(!messages[index - 1] || !isSameDay(messages[index - 1].timestamp, item.timestamp)) &&
 									<Text style={styles.date}> {formatDate(item.timestamp)} </Text>
 								}
-								{item.to && <DialogTo message={item} hasTail={!messages[index - 1] || !messages[index - 1].to} />}
-								{item.from && <DialogFrom message={item} hasTail={!messages[index - 1] || !messages[index - 1].from} />}
+								{item.to && <DialogToMessenger message={item} hasTail={!messages[index - 1] || !messages[index - 1].to} />}
+								{item.from && <DialogFromMessenger profile_pic={profile_pic} message={item} hasTail={!messages[index - 1] || !messages[index - 1].from} />}
 							</>
 						)}
 					/>
 				</View>
 				<View style={styles.inputContainer}>
-					<AppPicker items={categories} />
-					<TextInput style={styles.textInput} placeholder="Mensaje" value={text} onChangeText={setText} />
+					<Image style={styles.button} source={require("../assets/gt_blue.jpg")} />
+					<TextInput style={styles.textInput} placeholderTextColor="#7A7879" placeholder="Escribe un mensaje..." value={text} onChangeText={setText} />
 					<TouchableOpacity onPress={() => sendMessage(user_id, text, setText, messages, setMessages)} >
 						<View style={styles.sendCircle}>
 							<Image style={styles.button} source={send} />
@@ -219,14 +149,14 @@ const styles = StyleSheet.create({
 	},
 	textInput: {
 		borderRadius: 18,
-		backgroundColor: colors.white,
+		backgroundColor: "#F2F3F5",
 		width: "75%",
 		padding: 10,
 	},
 	background: {
 		flex: 1,
 		overflow: "hidden",
-		backgroundColor: colors.background,
+		backgroundColor: colors.white,
 	},
 	chatContainer: {
 		flex: 1,
@@ -250,7 +180,7 @@ const styles = StyleSheet.create({
 		width: 25,
 	},
 	sendCircle: {
-		backgroundColor: colors.newchat,
+		backgroundColor: colors.white,
 		borderRadius: 20,
 		height: 40,
 		width: 40,

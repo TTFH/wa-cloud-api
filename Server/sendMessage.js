@@ -283,8 +283,18 @@ function sendTemplate(phone_number, template_name, var1, payload) {
 					parameters: [{
 						type: "text",
 						text: var1,
-					}],
-				}, {
+					},
+					/*{
+						type: "text",
+						text: var2,
+					},
+					{
+						type: "text",
+						text: var3,
+					}*/
+					],
+				},
+				{
 					type: "button",
 					sub_type: "quick_reply",
 					index: 0,
@@ -305,7 +315,7 @@ function sendTemplate(phone_number, template_name, var1, payload) {
 				to: phone_number,
 				timestamp: Math.floor(Date.now() / 1000),
 				status: "sent",
-				template: { name: "template_name_unk" },
+				template: { name: template_name, args: [var1, /*var2, var3*/] },
 			};
 			updateDataBase();
 		}

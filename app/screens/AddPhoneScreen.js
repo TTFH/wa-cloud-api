@@ -7,10 +7,12 @@ import colors from "../config/colors";
 import { addPhoneNumber } from "../services/httpservice";
 
 function submitForm(navigation, number) {
-	addPhoneNumber(number).then(result => {
-		if (result.ok)
-			navigation.navigate("Chat", { user_id: number, username: result.data });
-	});
+	if (number.length > 0) {
+		addPhoneNumber(number).then(result => {
+			if (result.ok)
+				navigation.navigate("Chat", { user_id: number, username: result.data });
+		});
+	}
 }
 
 export default function AddPhoneScreen({ navigation }) {
@@ -27,9 +29,11 @@ export default function AddPhoneScreen({ navigation }) {
 			</Text>
 			<TextInput style={styles.input} placeholder="Agregar número" value={number} onChangeText={setNumber} />
 			<View style={styles.buttonContainer}>
-				<Button style={styles.button} title="Agregar" color={colors.primary}
-					onPress={() => submitForm(navigation, number.replace(/\D/g, ""))}
-				/>
+				<TouchableOpacity style={styles.button} onPress={() => submitForm(navigation, number.replace(/\D/g, ""))}>
+					<Text style={styles.buttonText}>
+						Agregar
+					</Text>
+				</TouchableOpacity>
 			</View>
 		</Screen>
 	);
@@ -63,6 +67,13 @@ const styles = StyleSheet.create({
 		padding: 5,
 	},
 	button: {
+		backgroundColor: colors.primary,
+		borderRadius: 10,
+		margin: 10,
+	},
+	buttonText: {
+		color: colors.white,
+		fontSize: 15,
 		margin: 10,
 	},
 });
