@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { FlatList, View, Text, Image, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { FlatList, View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 
 import Screen from "../components/Screen";
-import DialogToMessenger from "../components/DialogToMessenger";
-import ChatHeaderMessenger from "../components/ChatHeaderMessenger";
-import DialogFromMessenger from "../components/DialogFromMessenger";
+import DialogToFB from "../components/Dialog/DialogToFB";
+import ChatHeaderIG from "../components/Header/ChatHeaderIG";
+import DialogFromFB from "../components/Dialog/DialogFromFB";
 import colors from "../config/colors";
 
 import { getMessages, sendTextMessage } from "../services/httpservice";
-
-const send = require("../assets/send_fb.png");
 
 function formatDate(timestamp) {
 	const sendDate = new Date(timestamp * 1000);
@@ -72,7 +70,7 @@ const test_messages = [
 
 function sendMessage(user_id, text, setInputText, messages, setMessages) {
 	if (text.length > 0) {
-		sendTextMessage("messenger", user_id, text).then(result => {
+		sendTextMessage("instagram", user_id, text).then(result => {
 			const message = {
 				message_id: result.ok ? result.data : messages.length + 1,
 				to: user_id,
@@ -88,7 +86,7 @@ function sendMessage(user_id, text, setInputText, messages, setMessages) {
 	}
 }
 
-export default function ChatMessengerScreen({ route, navigation }) {
+export default function ChatScreenIG({ route, navigation }) {
 	const { user_id, username, profile_pic } = route.params;
 	const [messages, setMessages] = useState([]);
 	const [text, setText] = useState("");
@@ -104,7 +102,7 @@ export default function ChatMessengerScreen({ route, navigation }) {
 
 	return (
 		<Screen style={styles.background}>
-			<ChatHeaderMessenger navigation={navigation} username={username} profile_pic={profile_pic} />
+			<ChatHeaderIG navigation={navigation} username={username} profile_pic={profile_pic} />
 			<View style={styles.chatContainer}>
 				<View >
 					<FlatList
@@ -116,19 +114,19 @@ export default function ChatMessengerScreen({ route, navigation }) {
 								{(!messages[index - 1] || !isSameDay(messages[index - 1].timestamp, item.timestamp)) &&
 									<Text style={styles.date}> {formatDate(item.timestamp)} </Text>
 								}
-								{item.to && <DialogToMessenger message={item} hasTail={!messages[index - 1] || !messages[index - 1].to} />}
-								{item.from && <DialogFromMessenger profile_pic={profile_pic} message={item} hasTail={!messages[index - 1] || !messages[index - 1].from} />}
+								{item.to && <DialogToFB message={item} hasTail={!messages[index - 1] || !messages[index - 1].to} />}
+								{item.from && <DialogFromFB profile_pic={profile_pic} message={item} hasTail={!messages[index - 1] || !messages[index - 1].from} />}
 							</>
 						)}
 					/>
 				</View>
 				<View style={styles.inputContainer}>
-					<Image style={styles.button} source={require("../assets/gt_blue.jpg")} />
+
 					<TextInput style={styles.textInput} placeholderTextColor="#7A7879" placeholder="Escribe un mensaje..." value={text} onChangeText={setText} />
 					<TouchableOpacity onPress={() => sendMessage(user_id, text, setText, messages, setMessages)} >
-						<View style={styles.sendCircle}>
-							<Image style={styles.button} source={send} />
-						</View>
+						<Text>
+							Enviar
+						</Text>
 					</TouchableOpacity>
 				</View>
 			</View>

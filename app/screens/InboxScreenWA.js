@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, FlatList, Image, View, TouchableOpacity } from "react-native";
 
-import Card from "../components/Card";
-import Header from "../components/Header";
+import CardWA from "../components/CardWA";
+import InboxHeaderWA from "../components/Header/InboxHeaderWA";
 import Screen from "../components/Screen";
-import CardMessenger from "../components/CardMessenger";
 import colors from "../config/colors";
 
 import { getTotalUnread, getConversations } from "../services/httpservice";
@@ -111,7 +110,7 @@ const test_messages = [
 	},
 ];
 
-export default function InboxScreen({ navigation }) {
+export default function InboxScreenWA({ navigation }) {
 	const [messages, setMessages] = useState([]);
 	const [unreadTotal, setUnreadTotal] = useState(0);
 
@@ -130,25 +129,21 @@ export default function InboxScreen({ navigation }) {
 
 	return (
 		<>
-			<Header unread={unreadTotal} />
+			<InboxHeaderWA unread={unreadTotal} />
 			<Screen style={styles.screen}>
 				<FlatList
 					data={messages}
 					keyExtractor={(message) => message.user_id}
 					renderItem={({ item }) => (
 						<>
-							{item.channel === "whatsapp" && <Card
+							{item.channel === "whatsapp" && <CardWA
 								{...item}
-								onPress={() => navigation.navigate("Chat", { user_id: item.user_id, username: item.username })}
+								onPress={() => navigation.navigate("ChatWhatsApp", { user_id: item.user_id, username: item.username })}
 							/>}
-							{/*item.channel === "messenger" && <CardMessenger
-								{...item}
-								onPress={() => navigation.navigate("ChatMessenger", { user_id: item.user_id, profile_pic: item.profile_pic, username: item.username })}
-					/>*/}
 						</>
 					)}
 				/>
-				<TouchableOpacity onPress={() => navigation.navigate("AddPhone")}>
+				<TouchableOpacity onPress={() => navigation.navigate("AddContactWA")}>
 					<View style={styles.chatCircle}>
 						<Image style={styles.chatImage}
 							source={require("../assets/new_chat.png")}

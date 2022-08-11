@@ -1,8 +1,9 @@
 import React from "react";
 import { Text, Image, StyleSheet, View } from "react-native";
-import colors from "../config/colors";
 
-export default function Header({ unread }) {
+import colors from "../../config/colors";
+
+export default function InboxHeaderWA({ unread }) {
 	return (
 		<View style={styles.headerContainer}>
 			<View style={styles.flexContainer}>
@@ -11,16 +12,16 @@ export default function Header({ unread }) {
 				</Text>
 				<View style={styles.iconsContainer}>
 					<Image style={styles.button}
-						source={require("../assets/search.png")}
+						source={require("../../assets/search.png")}
 					/>
 					<Image style={styles.button}
-						source={require("../assets/menu.png")}
+						source={require("../../assets/menu.png")}
 					/>
 				</View>
 			</View>
 			<View style={styles.flexContainer}>
 				<Image style={styles.button}
-					source={require("../assets/camera.png")}
+					source={require("../../assets/camera.png")}
 				/>
 				<View style={styles.flexContainer}>
 					<View style={styles.selectedTab} >

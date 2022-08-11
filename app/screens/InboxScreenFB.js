@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, FlatList, View, Image, Text } from "react-native";
 
-import HeaderMessenger from "../components/HeaderMessenger";
+import InboxHeaderFB from "../components/Header/InboxHeaderFB";
 import Screen from "../components/Screen";
-import CardMessenger from "../components/CardMessenger";
+import CardFB from "../components/CardFB";
 import colors from "../config/colors";
 
 import { getConversations } from "../services/httpservice";
@@ -62,7 +62,7 @@ const test_messages = [
 	},
 ];
 
-export default function InboxMessengerScreen({ navigation }) {
+export default function InboxScreenFB({ navigation }) {
 	const [messages, setMessages] = useState([]);
 
 	useEffect(() => {
@@ -76,14 +76,14 @@ export default function InboxMessengerScreen({ navigation }) {
 
 	return (
 		<>
-			<HeaderMessenger />
+			<InboxHeaderFB />
 			<Screen style={styles.screen}>
 				<FlatList
 					data={messages}
 					keyExtractor={(message) => message.user_id}
 					renderItem={({ item }) => (
 						<>
-							{item.channel === "messenger" && <CardMessenger
+							{item.channel === "messenger" && <CardFB
 								{...item}
 								onPress={() => navigation.navigate("ChatMessenger", { user_id: item.user_id, profile_pic: item.profile_pic, username: item.username })}
 							/>}

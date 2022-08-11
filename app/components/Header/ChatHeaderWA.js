@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 
-import colors from "../config/colors";
+import colors from "../../config/colors";
 
 function truncateText(text, length) {
 	if (text?.length > length + 3)
@@ -9,26 +9,26 @@ function truncateText(text, length) {
 	return text;
 }
 
-const defaultPic = require("../assets/user_pic_fb.jpg");
+const profilePic = require("../../assets/user_pic.png");
 
-export default function ChatHeaderMessenger({ navigation, username, profile_pic }) {
+export default function ChatHeaderWA({ navigation, username }) {
 	return (
 		<View style={styles.headerContainer}>
 			<View style={styles.flexContainer}>
-				<TouchableOpacity onPress={() => navigation.navigate("MessengerInbox")}>
+				<TouchableOpacity onPress={() => navigation.navigate("WhatsAppInbox")}>
 					<Image style={styles.buttonBack}
-						source={require("../assets/back_fb.png")}
+						source={require("../../assets/back.png")}
 					/>
 				</TouchableOpacity>
 				<Image
 					style={styles.image}
-					source={profile_pic || defaultPic}
+					source={profilePic}
 				/>
 				<Text style={styles.title} numberOfLines={1}>
 					{truncateText(username, 22)}
 				</Text>
 				<Image style={styles.buttonRight}
-					source={require("../assets/info_fb.png")}
+					source={require("../../assets/menu.png")}
 				/>
 			</View>
 		</View>
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
 		marginRight: 12,
 	},
 	headerContainer: {
-		backgroundColor: colors.white,
+		backgroundColor: colors.primary,
 	},
 	flexContainer: {
 		alignItems: "center",
@@ -53,22 +53,20 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		alignSelf: "center",
-		color: colors.black,
+		color: colors.white,
 		fontFamily: "Helvetica",
-		fontWeight: "bold",
-		fontSize: 18,
+		fontSize: 16,
 	},
 	image: {
 		borderRadius: 18,
-		height: 36,
-		width: 36,
+		height: 34,
+		width: 34,
 		margin: 10,
 		marginLeft: 0,
 	},
 	buttonBack: {
 		height: 25,
 		width: 25,
-		marginLeft: 15,
-		marginRight: 15,
+		marginLeft: 5,
 	},
 });

@@ -28,7 +28,16 @@ function markAsRead(message_id) {
 	return api.put("mark_read", { message_id });
 }
 
+function addIgAccount(user_token) {
+	return api.put("add_ig_account", { user_token });
+}
+
+function getIgUsername() {
+	return api.get("ig_username");
+}
+
 export {
 	getTotalUnread, getConversations, getMessages,
 	sendTextMessage, addPhoneNumber, markAsRead,
+	addIgAccount, getIgUsername,
 };

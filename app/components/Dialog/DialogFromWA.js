@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 
-import colors from "../config/colors";
-import { markAsRead } from "../services/httpservice";
+import colors from "../../config/colors";
+import { markAsRead } from "../../services/httpservice";
 
-const tail_incoming = require("../assets/tail_incoming.png");
+const tail_incoming = require("../../assets/tail_incoming.png");
 
 function formatTime(timestamp) {
 	const sendDate = new Date(timestamp * 1000);
@@ -14,25 +14,23 @@ function formatTime(timestamp) {
 }
 
 function selectMessage(message_id) {
-	//markAsRead(message_id);
+	markAsRead(message_id);
 }
 
-const profilePic = require("../assets/user_pic_fb.jpg");
-
-export default function DialogFromMessenger({ profile_pic, message, hasTail }) {
+export default function DialogFromWA({ message, hasTail }) {
 	return (
 		<View style={styles.container}>
 			<View style={styles.container}>
-				<Image
-					style={styles.image}
-					source={profile_pic || profilePic}
-				/>
-
+				{!hasTail && <View style={styles.tail} />}
+				{hasTail && <Image style={styles.tail} source={tail_incoming} />}
 				<TouchableOpacity style={[styles.chat, hasTail && styles.squareCorner]}
 					onPress={() => selectMessage(message.message_id)}
 				>
 					<Text style={styles.chatText}>
 						{message.text?.body}
+					</Text>
+					<Text style={styles.chatTime}>
+						{formatTime(message.timestamp)}
 					</Text>
 				</TouchableOpacity>
 			</View>
@@ -42,7 +40,7 @@ export default function DialogFromMessenger({ profile_pic, message, hasTail }) {
 
 const styles = StyleSheet.create({
 	squareCorner: {
-		//borderTopLeftRadius: 0,
+		borderTopLeftRadius: 0,
 	},
 	tail: {
 		width: 10,
@@ -59,8 +57,8 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "flex-end",
 		justifyContent: "flex-start",
-		backgroundColor: "#F1F1F1",
-		borderRadius: 18,
+		backgroundColor: "#ffff",
+		borderRadius: 10,
 		maxWidth: "75%",
 		marginBottom: 4,
 	},
@@ -82,12 +80,5 @@ const styles = StyleSheet.create({
 		width: 18,
 		margin: 5,
 		marginLeft: 8,
-	},
-	image: {
-		borderRadius: 18,
-		height: 34,
-		width: 34,
-		marginLeft: 10,
-		marginRight: 10,
 	},
 });

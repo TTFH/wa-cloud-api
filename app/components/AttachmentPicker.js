@@ -8,12 +8,12 @@ import {
 	View,
 } from "react-native";
 
-import CategoryPickerItem from "./CategoryPickerItem";
+import AttachmentPickerItem from "./AttachmentPickerItem";
 
 const attachment = require("../assets/attachment.png");
 const closeButton = require("../assets/cross.png");
 
-export default function AppPicker({ items }) {
+export default function AttachmentPicker({ items }) {
 	const [modalVisible, setModalVisible] = useState(false);
 	return (
 		<>
@@ -34,7 +34,7 @@ export default function AppPicker({ items }) {
 						keyExtractor={(item) => item.value.toString()}
 						numColumns={3}
 						renderItem={({ item }) => (
-							<CategoryPickerItem
+							<AttachmentPickerItem
 								item={item}
 								label={item.label}
 								onPress={() => {

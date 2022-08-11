@@ -1,11 +1,12 @@
 import React from "react";
 import { Text, Image, StyleSheet, View, TextInput } from "react-native";
-import colors from "../config/colors";
 
-const defaultPic = require("../assets/user_pic_fb.jpg");
-const profile_pic = require("../assets/test_page.png");
+import colors from "../../config/colors";
 
-export default function HeaderMessenger() {
+const defaultPic = require("../../assets/user_pic_fb.jpg");
+const profile_pic = require("../../assets/test_page.png");
+
+export default function InboxHeaderFB() {
 	return (
 		<View style={styles.headerContainer}>
 			<View style={styles.flexContainer}>
@@ -17,13 +18,13 @@ export default function HeaderMessenger() {
 				</Text>
 				<View style={styles.iconsContainer}>
 					<Image style={styles.button}
-						source={require("../assets/filter.jpg")}
+						source={require("../../assets/filter.jpg")}
 					/>
 				</View>
 			</View>
 			<View style={styles.searchBar}>
 				<Image style={styles.searchIcon}
-					source={require("../assets/search_fb.png")}
+					source={require("../../assets/search_fb.png")}
 				/>
 				<TextInput style={styles.searchInput} placeholderTextColor="#7A7879" placeholder="Buscar" />
 			</View>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, StyleSheet, Button, TextInput, Image, TouchableOpacity, View } from "react-native";
+import { Text, StyleSheet, TextInput, Image, TouchableOpacity, View } from "react-native";
 
 import Screen from "../components/Screen";
 import colors from "../config/colors";
@@ -10,16 +10,16 @@ function submitForm(navigation, number) {
 	if (number.length > 0) {
 		addPhoneNumber(number).then(result => {
 			if (result.ok)
-				navigation.navigate("Chat", { user_id: number, username: result.data });
+				navigation.navigate("ChatWhatsApp", { user_id: number, username: result.data });
 		});
 	}
 }
 
-export default function AddPhoneScreen({ navigation }) {
+export default function AddContactScreenWA({ navigation }) {
 	const [number, setNumber] = useState("");
 	return (
 		<Screen style={styles.container}>
-			<TouchableOpacity onPress={() => navigation.navigate("Home")}>
+			<TouchableOpacity onPress={() => navigation.navigate("WhatsAppInbox")}>
 				<Image style={styles.buttonBack}
 					source={require("../assets/back.png")}
 				/>

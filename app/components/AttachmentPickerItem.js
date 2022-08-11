@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 
 import Icon from "./Icon";
 
-export default function CategoryPickerItem({ item, onPress }) {
+export default function AttachmentPickerItem({ item, onPress }) {
 	return (
 		<View style={styles.container}>
 			<TouchableOpacity onPress={onPress}>

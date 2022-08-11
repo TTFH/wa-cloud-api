@@ -1,18 +1,7 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
-import colors from "../config/colors";
-
-const delivered = require("../assets/delivered.png");
-const read = require("../assets/read.png");
-const tail_outgoing = require("../assets/tail_outgoing.png");
-
-function formatTime(timestamp) {
-	const sendDate = new Date(timestamp * 1000);
-	const hours = sendDate.getHours();
-	const minutes = sendDate.getMinutes();
-	return `${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
-}
+import colors from "../../config/colors";
 
 function getMessageText(message) {
 	if (message.text)
@@ -34,7 +23,7 @@ function getMessageText(message) {
 	return "Unimplemented message type";
 }
 
-export default function DialogToMessenger({ message, hasTail }) {
+export default function DialogToFB({ message, hasTail }) {
 	return (
 		<View style={styles.container}>
 			<View style={styles.container}>
@@ -42,9 +31,7 @@ export default function DialogToMessenger({ message, hasTail }) {
 					<Text style={styles.chatText}>
 						{getMessageText(message)}
 					</Text>
-
 				</View>
-
 				<View style={styles.tail} />
 			</View>
 		</View>
@@ -53,7 +40,6 @@ export default function DialogToMessenger({ message, hasTail }) {
 
 const styles = StyleSheet.create({
 	squareCorner: {
-		//borderTopRightRadius: 0,
 	},
 	tail: {
 		width: 10,

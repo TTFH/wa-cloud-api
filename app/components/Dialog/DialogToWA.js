@@ -1,11 +1,11 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 
-import colors from "../config/colors";
+import colors from "../../config/colors";
 
-const delivered = require("../assets/delivered.png");
-const read = require("../assets/read.png");
-const tail_outgoing = require("../assets/tail_outgoing.png");
+const delivered = require("../../assets/delivered.png");
+const read = require("../../assets/read.png");
+const tail_outgoing = require("../../assets/tail_outgoing.png");
 
 function formatTime(timestamp) {
 	const sendDate = new Date(timestamp * 1000);
@@ -34,7 +34,7 @@ function getMessageText(message) {
 	return "Unimplemented message type";
 }
 
-export default function DialogTo({ message, hasTail }) {
+export default function DialogToWA({ message, hasTail }) {
 	return (
 		<View style={styles.container}>
 			<View style={styles.container}>

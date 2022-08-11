@@ -211,7 +211,33 @@ function markRead(req, res) {
 	res.sendStatus(200);
 }
 
-const DEBUG = false;
+const http = require("axios").default;
+const MSG_TOKEN = "";
+
+function sendTextMessenger(user_id, text) {
+	http.post("https://graph.facebook.com/v14.0/me/messages?access_token=" + MSG_TOKEN,
+		{
+			recipient: { id: user_id },
+			message: { text }
+		}, {
+		headers: {
+			"Content-Type": "application/json",
+		}
+	}).then(response => {
+		if (response.data.message_id) {
+			const message_id = response.data.message_id;
+			database.messages[message_id] = {
+				to: user_id,
+				timestamp: Math.floor(Date.now() / 1000),
+				status: "sent",
+				text: { body: text_msg },
+			};
+			updateDataBase();
+		}
+	});
+}
+
+const DEBUG = true;
 if (!DEBUG) {
 	app.listen(PORT, serverUp);
 	app.get("/webhook", verifyEndpoint);
@@ -270,6 +296,23 @@ if (!DEBUG) {
 	}];
 
 	//sendText(phone_number, "Hello world!");
-	//sendImageRaw(phone_number, "Coo coo roo coo!", "./media/rooster.jpg");
+	//sendImage(phone_number, "Imagen de prueba", "https://www.mpg.de/18490336/original-1656406663.jpg");
+	//sendAudio(phone_number, "https://dgihnrxqil95z.cloudfront.net/sent-files/8/ns8ewri00fqkob2lfgge8gv7xdijhvp/Rage_your_dream_-_Move.mp3");
+	//sendVideo(phone_number, "Video de prueba", "https://i.imgur.com/b4Oi7vS.mp4");
+	//sendDocument(phone_number, "example_file.pdf", "https://www.fiat.com.uy/wp-content/uploads/sites/8/2021/03/Ficha-Fiat-Toro-Freedon-Nafta-1800-Toro-Freedon-Diesel-2000-Toro-volcano-turbo-1300.pdf");
+	//sendSticker(phone_number, "https://cdn.discordapp.com/attachments/272591004488695809/999781739188728010/this_is_fine.webp");
+	//sendLocation(phone_number, "-34.863", "-56.154", "Antel Arena", "Airstrike target");
 	//sendContacts(phone_number, contacts_data);
+	//sendTemplate(phone_number, "sdi_template1", "Adrián Barreto", "gamer", "Guille");
+	//sendTemplate(phone_number, "button_template", "Adrián Barreto", "reclamos");
+	//sendInteractive(phone_number, "Reunion", "Hacemos un zoom?", "https://salavirtual-udelar.zoom.us/j/2163815593", "Dale!", "(seguir durmiendo)");
+
+	//sendImageRaw(phone_number, "A kitten", "./media/test_image.jpg");
+	//sendAudioRaw(phone_number, "./media/rage_your_dream.mp3");
+	//sendVideoRaw(phone_number, "Not a cat", "./media/mechi.mp4");
+	//sendStickerRaw(phone_number, "./media/this_is_fine.webp");
+	//sendDocumentRaw(phone_number, "Operative System", "./media/osc.pdf");
+
+	//sendTextReply(phone_number, "Goodbye!", "wamid.HBgLNTk4OTg2MzE5MDgVAgARGBJDN0I3QjFBMkFDMjAyMDcyRDkA");
+	//sendTextMessenger("11111111111111111", "Hello world!");
 }

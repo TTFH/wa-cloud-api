@@ -19,7 +19,7 @@
     "expo-status-bar": "latest",
     "react": "18.0.0",
     "react-dom": "18.0.0",
-    "react-native": "latest",
+    "react-native": "^0.69.4",
     "react-native-gesture-handler": "latest",
     "react-native-safe-area-context": "latest",
     "react-native-screens": "latest",
