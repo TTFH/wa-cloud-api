@@ -1,14 +1,15 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { Text, StyleSheet, TextInput, Image, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 
+import AppButton from "../components/AppButton";
 import Screen from "../components/Screen";
 import colors from "../config/colors";
-
-import { addPhoneNumber } from "../services/httpservice";
+import http from "../services/client";
 
 function submitForm(navigation, number) {
 	if (number.length > 0) {
-		addPhoneNumber(number).then(result => {
+		http.put("add_contact", { number }).then(result => {
 			if (result.ok)
 				navigation.navigate("ChatWhatsApp", { user_id: number, username: result.data });
 		});
@@ -20,60 +21,35 @@ export default function AddContactScreenWA({ navigation }) {
 	return (
 		<Screen style={styles.container}>
 			<TouchableOpacity onPress={() => navigation.navigate("WhatsAppInbox")}>
-				<Image style={styles.buttonBack}
-					source={require("../assets/back.png")}
-				/>
+				<MaterialCommunityIcons style={styles.back} color={colors.whatsapp} name="arrow-left" size={25} />
 			</TouchableOpacity>
 			<Text style={styles.text}>
 				Ingrese un nuevo número de teléfono:
 			</Text>
-			<TextInput style={styles.input} placeholder="Agregar número" value={number} onChangeText={setNumber} />
-			<View style={styles.buttonContainer}>
-				<TouchableOpacity style={styles.button} onPress={() => submitForm(navigation, number.replace(/\D/g, ""))}>
-					<Text style={styles.buttonText}>
-						Agregar
-					</Text>
-				</TouchableOpacity>
-			</View>
+			<TextInput style={styles.input} placeholder="Ingresar número" value={number} onChangeText={setNumber} />
+			<AppButton text="Agregar número" logo="cellphone" color={colors.whatsapp} onPress={() => submitForm(navigation, number.replace(/\D/g, ""))} />
 		</Screen>
 	);
 }
 
 const styles = StyleSheet.create({
-	buttonContainer: {
-		alignItems: "center",
+	back: {
+		marginLeft: 8,
+		marginTop: 8,
 	},
 	container: {
 		flex: 1,
 	},
-	buttonBack: {
-		height: 30,
-		width: 30,
-		marginTop: 8,
-		marginLeft: 8,
-		backgroundColor: colors.primary,
-		borderRadius: 15,
+	input: {
+		borderColor: "gray",
+		borderRadius: 10,
+		borderWidth: 1,
+		fontSize: 20,
+		margin: 10,
+		padding: 5,
 	},
 	text: {
 		fontSize: 20,
-		margin: 10,
-	},
-	input: {
-		margin: 10,
-		borderColor: "gray",
-		borderWidth: 1,
-		fontSize: 20,
-		borderRadius: 10,
-		padding: 5,
-	},
-	button: {
-		backgroundColor: colors.primary,
-		borderRadius: 10,
-		margin: 10,
-	},
-	buttonText: {
-		color: colors.white,
-		fontSize: 15,
 		margin: 10,
 	},
 });

@@ -114,6 +114,16 @@ function getIgUsername(req, res) {
 	res.send("Not logged in");
 }
 
+function addPhoneNumber(req, res) {
+	const phone_number = req.body.number;
+	console.log("Numero: " + phone_number);
+	const name = "Numero Desconocido";
+	database.users[phone_number] = { channel: "whatsapp", name };
+	database.update();
+	res.setHeader("Access-Control-Allow-Origin", "*");
+	res.send(name);
+}
+
 initDatabase();
 app.listen(PORT, serverUp);
 app.get("/whatsapp", verifyEndpoint);
@@ -131,9 +141,10 @@ app.post("/message", sendMessage);
 
 app.get("/ig_username", getIgUsername);
 app.put("/add_ig_account", addIgAccount);
+
+app.put("/add_contact", addPhoneNumber); // TODO: add channel param
 /*
 app.get("/unread_total", getTotalUnread); // TODO: whatsapp only
-app.put("/add_contact", addPhoneNumber); // TODO: add channel param
 app.put("/mark_read", markRead); // TODO: use timestamp for messenger
 // TODO: Check timezones, decrease timestamp by 3 * 60 *60 seconds
 */

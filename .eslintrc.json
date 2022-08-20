@@ -1,0 +1,20 @@
+{
+	"env": {
+		"react-native/react-native": true
+	},
+	"plugins": ["react", "react-native", "simple-import-sort"],
+	"parserOptions": {
+		"ecmaVersion": "latest",
+		"sourceType": "module",
+		"ecmaFeatures": {
+			"jsx": true
+		}
+	},
+	"rules": {
+		"react-native/no-unused-styles": 2,
+		"react-native/sort-styles": 2,
+		"simple-import-sort/exports": 2,
+		"simple-import-sort/imports": 2,
+		"react/self-closing-comp": 1
+	}
+}

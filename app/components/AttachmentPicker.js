@@ -1,40 +1,27 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import {
-	FlatList,
-	Image,
-	Modal,
-	StyleSheet,
-	TouchableOpacity,
-	View,
-} from "react-native";
+import { FlatList, Image, Modal, StyleSheet, TouchableOpacity, View, } from "react-native";
 
-import AttachmentPickerItem from "./AttachmentPickerItem";
-
-const attachment = require("../assets/attachment.png");
-const closeButton = require("../assets/cross.png");
+import PickerItem from "./PickerItem";
 
 export default function AttachmentPicker({ items }) {
 	const [modalVisible, setModalVisible] = useState(false);
 	return (
 		<>
 			<TouchableOpacity onPress={() => setModalVisible(true)}>
-				<Image style={styles.button}
-					source={attachment}
-				/>
+				<MaterialCommunityIcons style={styles.rotate} color="#8696A0" name="attachment" size={25} />
 			</TouchableOpacity>
 			<Modal visible={modalVisible} animationType="slide" transparent={true}>
 				<View style={styles.modal}>
 					<TouchableOpacity style={styles.close} onPress={() => setModalVisible(false)}>
-						<Image style={styles.button}
-							source={closeButton}
-						/>
+						<MaterialCommunityIcons color="#8696A0" name="close" size={25} />
 					</TouchableOpacity>
 					<FlatList
 						data={items}
 						keyExtractor={(item) => item.value.toString()}
 						numColumns={3}
 						renderItem={({ item }) => (
-							<AttachmentPickerItem
+							<PickerItem
 								item={item}
 								label={item.label}
 								onPress={() => {
@@ -53,21 +40,17 @@ export default function AttachmentPicker({ items }) {
 const styles = StyleSheet.create({
 	close: {
 		alignSelf: "flex-end",
-		padding: 5,
+		paddingRight: 5,
+		paddingTop: 5,
 	},
 	modal: {
-		alignItems: "center",
 		alignSelf: "center",
 		backgroundColor: "white",
 		borderRadius: 10,
-		top: "26%",
-		height: "66%",
-		justifyContent: "center",
+		top: "24%",
 		width: "95%",
-		overflow: "hidden",
 	},
-	button: {
-		height: 25,
-		width: 25,
+	rotate: {
+		transform: [{ rotate: "225deg" }]
 	},
 });

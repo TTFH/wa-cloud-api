@@ -1,13 +1,13 @@
 import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import Icon from "./Icon";
+import PickerIcon from "./PickerIcon";
 
-export default function AttachmentPickerItem({ item, onPress }) {
+export default function PickerItem({ item, onPress }) {
 	return (
 		<View style={styles.container}>
 			<TouchableOpacity onPress={onPress}>
-				<Icon
+				<PickerIcon
 					colorTop={item.colorTop}
 					colorBottom={item.colorBottom}
 					name={item.icon}
@@ -20,13 +20,13 @@ export default function AttachmentPickerItem({ item, onPress }) {
 
 const styles = StyleSheet.create({
 	container: {
+		alignItems: "center",
 		paddingHorizontal: 15,
 		paddingVertical: 10,
-		alignItems: "center",
 		width: "33%",
 	},
 	label: {
-		fontSize: 18,
+		fontSize: 16,
 		marginTop: 5,
 		textAlign: "center",
 	},

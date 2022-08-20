@@ -1,5 +1,9 @@
 # WhatsApp Cloud Api implementation in React Native and Node.js  
 ### A working application to send and receive WhatsApp, Messenger and Instagram messages* using Meta's Cloud Api  
+
+![Inbox](https://github.com/TTFH/wa-cloud-api/blob/main/preview/inbox.jpg)
+
+![Chat](https://github.com/TTFH/wa-cloud-api/blob/main/preview/chat.jpg)
   
 **Warning:** This application contains JS code, use at your own risk.  
 \* only text messages are currently implemented  
@@ -30,11 +34,5 @@ Open http://localhost:4040/ in your browser and copy your server URL
 First, you need a Facebook account :(  
 Go to https://developers.facebook.com/ and create an App of type Business  
 Click on Add Product and select WhatsApp  
-Go to Getting started and copy your Temporary access token and your Phone number ID to Server/server.js (the token expire in 24 hours, you can get a permanet token somehow)  
+Go to Getting started and copy your Temporary access token and your Phone number ID to Server/server.js (you can also get a permanet token)  
 Go to Configuration and edit your Callback URL, add your server URL (https://???.eu.ngrok.io/webhook) and set your Verify token from Server/server.js  
-
-![Inbox](https://github.com/TTFH/wa-cloud-api/blob/734f51ff73f4882166cd0e426dff0296e5cc5add/preview/inbox.png)
-
-![Chat](https://github.com/TTFH/wa-cloud-api/blob/734f51ff73f4882166cd0e426dff0296e5cc5add/preview/chat.png)
-
-![Messenger](https://github.com/TTFH/wa-cloud-api/blob/main/preview/messenger.png)

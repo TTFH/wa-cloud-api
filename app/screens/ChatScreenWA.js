@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { FlatList, View, Text, Image, StyleSheet, ImageBackground, TextInput, TouchableOpacity } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
+import { FlatList, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
-import Screen from "../components/Screen";
-import DialogToWA from "../components/Dialog/DialogToWA";
 import AttachmentPicker from "../components/AttachmentPicker";
+import DialogWA from "../components/Dialog/DialogWA";
 import ChatHeaderWA from "../components/Header/ChatHeaderWA";
-import DialogFromWA from "../components/Dialog/DialogFromWA";
+import Screen from "../components/Screen";
 import colors from "../config/colors";
-
-import { getMessages, sendTextMessage } from "../services/httpservice";
-
-const send = require("../assets/send.png");
+import http from "../services/client";
 
 function formatDate(timestamp) {
 	const sendDate = new Date(timestamp * 1000);
@@ -23,7 +20,8 @@ function formatDate(timestamp) {
 		return "Ayer";
 
 	const year = sendDate.getFullYear();
-	const month = sendDate.toLocaleString("es", { month: "long" });
+	const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+	const month = monthNames[sendDate.getMonth()];
 	const day = sendDate.getDate();
 	return `${day} de ${month} de ${year}`;
 }
@@ -103,43 +101,51 @@ const categories = [
 const test_messages = [
 	{
 		message_id: "1",
-		to: true,
-		status: "read",
-		timestamp: 1658310000,
+		incoming: true,
+		timestamp: 1660950000,
 		text: {
-			body: "Hola?",
+			body: "Hello!",
 		},
 	},
 	{
 		message_id: "2",
-		to: true,
-		status: "read",
-		timestamp: 1658310100,
+		incoming: true,
+		timestamp: 1660950100,
+		forwarded: true,
 		text: {
-			body: "Hay alguien?",
+			body: "Are you a React Native dev?",
 		},
 	},
 	{
 		message_id: "3",
-		from: true,
-		timestamp: 1658310200,
+		timestamp: 1660950200,
+		status: "read",
 		text: {
-			body: "Hello World!",
+			body: "No",
 		},
 	},
 	{
 		message_id: "4",
-		from: true,
-		timestamp: 1658310300,
+		timestamp: 1660950300,
+		status: "delivered",
+		forwarded: true,
 		text: {
-			body: "Goodbye.",
+			body: "I flip bits.",
+		},
+	},
+	{
+		message_id: "5",
+		incoming: true,
+		timestamp: 1660950400,
+		text: {
+			body: "That's fair, hagd",
 		},
 	},
 ];
 
 function sendMessage(user_id, text, setInputText, messages, setMessages) {
 	if (text.length > 0) {
-		sendTextMessage("whatsapp", user_id, text).then(result => {
+		http.post("message", { channel: "whatsapp", user_id, text }).then(result => {
 			const message = {
 				message_id: result.ok ? result.data : messages.length + 1,
 				to: user_id,
@@ -161,7 +167,7 @@ export default function ChatScreenWA({ route, navigation }) {
 	const [text, setText] = useState("");
 
 	useEffect(() => {
-		getMessages(user_id).then(result => {
+		http.get("messages", { user_id }).then(result => {
 			if (result.ok)
 				setMessages(result.data);
 			else
@@ -170,13 +176,13 @@ export default function ChatScreenWA({ route, navigation }) {
 	}, []);
 
 	return (
-		<Screen style={styles.background}>
+		<Screen style={styles.background} statusBarColor={colors.whatsapp}>
 			<ChatHeaderWA navigation={navigation} username={username} />
 			<ImageBackground style={styles.backgroundImage}
 				source={require("../assets/background.png")}
 			/>
 			<View style={styles.chatContainer}>
-				<View >
+				<View>
 					<FlatList
 						contentContainerStyle={{ justifyContent: "flex-end" }}
 						data={messages}
@@ -184,77 +190,71 @@ export default function ChatScreenWA({ route, navigation }) {
 						renderItem={({ item, index }) => (
 							<>
 								{(!messages[index - 1] || !isSameDay(messages[index - 1].timestamp, item.timestamp)) &&
-									<Text style={styles.date}> {formatDate(item.timestamp)} </Text>
-								}
-								{item.to && <DialogToWA message={item} hasTail={!messages[index - 1] || !messages[index - 1].to} />}
-								{item.from && <DialogFromWA message={item} hasTail={!messages[index - 1] || !messages[index - 1].from} />}
+									<Text style={styles.date}> {formatDate(item.timestamp)} </Text>}
+								<DialogWA message={item} hasTail={!messages[index - 1] || messages[index - 1].incoming !== messages[index].incoming} />
 							</>
 						)}
 					/>
 				</View>
-				<View style={styles.inputContainer}>
-					<AttachmentPicker items={categories} />
-					<TextInput style={styles.textInput} placeholder="Mensaje" value={text} onChangeText={setText} />
-					<TouchableOpacity onPress={() => sendMessage(user_id, text, setText, messages, setMessages)} >
-						<View style={styles.sendCircle}>
-							<Image style={styles.button} source={send} />
-						</View>
-					</TouchableOpacity>
-				</View>
+			</View>
+			<View style={styles.inputContainer}>
+				<AttachmentPicker items={categories} />
+				<TextInput style={styles.textInput} placeholder="Mensaje" value={text} onChangeText={setText} />
+				<TouchableOpacity onPress={() => sendMessage(user_id, text, setText, messages, setMessages)} >
+					<View style={styles.sendCircle}>
+						<MaterialCommunityIcons color="#FFFFFF" name="send" size={25} />
+					</View>
+				</TouchableOpacity>
 			</View>
 		</Screen>
 	);
 }
 
 const styles = StyleSheet.create({
-	date: {
-		alignSelf: "center",
-		backgroundColor: colors.white,
-		color: colors.light,
-		fontSize: 12,
-		borderRadius: 7,
-		padding: 5,
-		marginTop: 8,
-		marginBottom: 8,
-	},
-	textInput: {
-		borderRadius: 18,
-		backgroundColor: colors.white,
-		width: "75%",
-		padding: 10,
-	},
 	background: {
-		flex: 1,
-		overflow: "hidden",
-		backgroundColor: colors.background,
+		backgroundColor: colors.wa_chat_bg,
+	},
+	backgroundImage: {
+		height: "100%",
+		opacity: 0.5,
+		position: "absolute",
+		width: "100%",
+		zIndex: -1,
 	},
 	chatContainer: {
 		flex: 1,
 		justifyContent: "flex-end",
+		paddingHorizontal: 5,
+	},
+	date: {
+		alignSelf: "center",
+		backgroundColor: colors.white,
+		borderRadius: 7,
+		color: colors.wa_dialog_date,
+		fontSize: 12,
+		marginBottom: 8,
+		marginTop: 8,
+		padding: 5,
 	},
 	inputContainer: {
+		alignItems: "center",
 		flexDirection: "row",
 		justifyContent: "space-between",
-		padding: 5,
-		alignItems: "center",
-	},
-	backgroundImage: {
-		width: "100%",
-		height: "100%",
-		opacity: 0.5,
-		position: "absolute",
-		zIndex: -1,
-	},
-	button: {
-		height: 25,
-		width: 25,
+		padding: 10,
+		paddingBottom: 5,
 	},
 	sendCircle: {
-		backgroundColor: colors.newchat,
-		borderRadius: 20,
-		height: 40,
-		width: 40,
-		justifyContent: "center",
 		alignItems: "center",
+		backgroundColor: colors.wa_send_button,
+		borderRadius: 22,
+		height: 44,
+		justifyContent: "center",
+		width: 44,
+	},
+	textInput: {
+		backgroundColor: colors.white,
+		borderRadius: 25,
+		padding: 10,
+		width: "75%",
 	},
 });

@@ -10,12 +10,16 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "@expo/webpack-config": "^0.17.0",
+    "@expo/webpack-config": "^0.16.19",
+    "@react-native-async-storage/async-storage": "^1.17.9",
     "@react-navigation/native": "latest",
     "@react-navigation/stack": "latest",
     "apisauce": "latest",
     "axios": "latest",
     "expo": "latest",
+    "expo-app-loading": "^2.1.0",
+    "expo-device": "^4.3.0",
+    "expo-notifications": "^0.16.1",
     "expo-status-bar": "latest",
     "react": "18.0.0",
     "react-dom": "18.0.0",
@@ -25,5 +29,11 @@
     "react-native-screens": "latest",
     "react-native-web": "latest"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "eslint": "^8.22.0",
+    "eslint-plugin-react": "^7.30.1",
+    "eslint-plugin-react-native": "^4.0.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0"
+  }
 }

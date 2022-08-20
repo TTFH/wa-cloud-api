@@ -1,111 +1,94 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, FlatList, Image, View, TouchableOpacity } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
+import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import CardWA from "../components/CardWA";
 import InboxHeaderWA from "../components/Header/InboxHeaderWA";
 import Screen from "../components/Screen";
 import colors from "../config/colors";
-
-import { getTotalUnread, getConversations } from "../services/httpservice";
+import http from "../services/client";
 
 const test_messages = [
 	{
-		user_id: "-2",
-		username: "Test Page",
-		profile_pic: require("../assets/test_page.png"),
-		channel: "messenger",
-		unread_count: 17,
-		last_message: {
-			from: "59899999999",
-			timestamp: 1659646749,
-			status: "read",
-			text: { body: "Prueba final" },
-		},
-	},
-	{
-		user_id: "-1",
-		username: "Test Messenger",
-		profile_pic: require("../assets/test_profile.png"),
-		channel: "messenger",
-		unread_count: 0,
-		last_message: {
-			to: "59899999999",
-			timestamp: 1659645749,
-			status: "read",
-			text: { body: "Hola" },
-		},
-	},
-	{
-		user_id: "0",
-		username: "Solo tú",
-		profile_pic: require("../assets/cat.jpg"),
-		channel: "messenger",
-		unread_count: 0,
-		last_message: {
-			to: "59899999999",
-			timestamp: 1659644749,
-			status: "delivered",
-			text: { body: "It's me" },
-		},
-	},
-	{
 		user_id: "1",
-		username: "Juan Perez",
-		channel: "messenger",
-		unread_count: 0,
+		username: "Test Number",
+		channel: "whatsapp",
+		unread_count: 1,
 		last_message: {
-			to: "59899999999",
-			timestamp: 1658791943,
-			status: "sent",
-			text: { body: "Hola!" },
+			incoming: true,
+			timestamp: 1660950000,
+			text: { body: "Hello, world! 🌎" },
 		},
 	},
 	{
 		user_id: "2",
-		username: "Tommy",
+		username: "Juan Perez",
 		channel: "whatsapp",
-		unread_count: 0,
 		last_message: {
-			from: "59899999999",
-			timestamp: 1658591943,
-			status: "read",
-			image: { caption: "Look at this kitten" },
+			status: "sent",
+			timestamp: 1660800000,
+			image: { caption: "Look at this kitten 😻" },
 		},
 	},
 	{
 		user_id: "3",
 		username: "Ninja Turbo",
 		channel: "whatsapp",
-		unread_count: 0,
 		last_message: {
-			from: "59899999999",
-			timestamp: 1658491943,
 			status: "delivered",
-			video: { caption: "Do you love this song?" },
+			timestamp: 1660700000,
+			audio: {},
 		},
 	},
 	{
 		user_id: "4",
-		username: "Jose Maria Rodriguez",
+		username: "Oka Nieba ✈️",
 		channel: "whatsapp",
-		unread_count: 0,
 		last_message: {
-			from: "59899999999",
-			timestamp: 1658391943,
 			status: "read",
-			location: { name: "This place sucks" },
+			timestamp: 1660600000,
+			video: { caption: "Listen to our beautiful voice" },
 		},
 	},
 	{
 		user_id: "5",
-		username: "Test Number",
+		username: "Mom ❤️",
 		channel: "whatsapp",
-		unread_count: 0,
+		unread_count: 5,
 		last_message: {
-			to: "59899999999",
-			timestamp: 1658291943,
-			status: "delivered",
-			text: { body: "Hello World" },
+			incoming: true,
+			timestamp: 1660500000,
+			document: { caption: "Dinner is ready.txt" },
+		},
+	},
+	{
+		user_id: "6",
+		username: "Random Dude",
+		channel: "whatsapp",
+		last_message: {
+			incoming: true,
+			timestamp: 1660300000,
+			sticker: {},
+		},
+	},
+	{
+		user_id: "7",
+		username: "Jose Maria Rodriguez",
+		channel: "whatsapp",
+		last_message: {
+			incoming: true,
+			timestamp: 1660200000,
+			contacts: { name: "Juan Perez" },
+		},
+	},
+	{
+		user_id: "8",
+		username: "Tommy",
+		channel: "whatsapp",
+		last_message: {
+			incoming: true,
+			timestamp: 1660200000,
+			location: { name: "This place 🗺️ sucks." },
 		},
 	},
 ];
@@ -115,63 +98,61 @@ export default function InboxScreenWA({ navigation }) {
 	const [unreadTotal, setUnreadTotal] = useState(0);
 
 	useEffect(() => {
-		getTotalUnread().then(result => {
-			if (result.ok)
-				setUnreadTotal(result.data);
-		});
-		getConversations().then(result => {
+		http.get("conversations").then(result => {
 			if (result.ok)
 				setMessages(result.data);
 			else
 				setMessages(test_messages);
+
+			const total_unread = test_messages.reduce((acc, curr) => {
+				return acc + (curr.channel == "whatsapp" && curr.unread_count > 0 ? 1 : 0);
+			}, 0);
+			setUnreadTotal(total_unread);
 		});
 	}, []);
 
 	return (
-		<>
-			<InboxHeaderWA unread={unreadTotal} />
-			<Screen style={styles.screen}>
-				<FlatList
-					data={messages}
-					keyExtractor={(message) => message.user_id}
-					renderItem={({ item }) => (
-						<>
-							{item.channel === "whatsapp" && <CardWA
-								{...item}
-								onPress={() => navigation.navigate("ChatWhatsApp", { user_id: item.user_id, username: item.username })}
-							/>}
-						</>
-					)}
-				/>
-				<TouchableOpacity onPress={() => navigation.navigate("AddContactWA")}>
-					<View style={styles.chatCircle}>
-						<Image style={styles.chatImage}
-							source={require("../assets/new_chat.png")}
-						/>
-					</View>
-				</TouchableOpacity>
-			</Screen>
-		</>
+		<Screen statusBarColor={colors.whatsapp}>
+			<InboxHeaderWA navigation={navigation} unread={unreadTotal} />
+			<FlatList
+				style={styles.container}
+				data={messages}
+				keyExtractor={(message) => message.user_id}
+				renderItem={({ item }) => (
+					<>
+						{item.channel === "whatsapp" && <CardWA
+							{...item}
+							onPress={() => navigation.navigate("ChatWhatsApp", { user_id: item.user_id, username: item.username })}
+						/>}
+					</>
+				)}
+			/>
+			<TouchableOpacity onPress={() => navigation.navigate("AddContactWA")}>
+				<View style={styles.chatCircle}>
+					<MaterialCommunityIcons style={styles.flipX} color="#FFFFFF" name="android-messages" size={25} />
+				</View>
+			</TouchableOpacity>
+		</Screen>
 	);
 }
 
 const styles = StyleSheet.create({
-	screen: {
-		padding: 15,
-	},
 	chatCircle: {
 		alignItems: "center",
-		backgroundColor: colors.newchat,
-		borderRadius: 25,
-		bottom: 8,
-		height: 50,
+		backgroundColor: colors.wa_send_button,
+		borderRadius: 28,
+		bottom: 15,
+		elevation: 5,
+		height: 56,
 		justifyContent: "center",
-		position: "fixed",
-		right: 8,
-		width: 50,
+		position: "absolute",
+		right: 15,
+		width: 56,
 	},
-	chatImage: {
-		height: 25,
-		width: 25,
+	container: {
+		paddingHorizontal: 15,
+	},
+	flipX: {
+		transform: [{ scaleX: -1 }],
 	},
 });

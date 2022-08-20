@@ -1,7 +1,8 @@
 import React from "react";
-import { Text, Image, StyleSheet, View, TouchableOpacity } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import colors from "../config/colors";
+import PreviewIcon from "./PreviewIcon";
 
 function truncateText(text, length) {
 	if (text.length > length + 3)
@@ -41,23 +42,11 @@ function formatTime(timestamp) {
 	} else if (diff < 48 * 60 * 60 * 1000)
 		return "Ayer";
 
-	const year = sendDate.getFullYear();
-	const month = sendDate.getMonth();
+	const year = sendDate.getFullYear() % 100;
+	const month = sendDate.getMonth() + 1;
 	const day = sendDate.getDate();
 	return `${day}/${month}/${year}`;
 }
-
-const sent = require("../assets/sent.png");
-const delivered = require("../assets/delivered.png");
-const read = require("../assets/read.png");
-
-const image = require("../assets/image.png");
-const audio = require("../assets/audio.png");
-const video = require("../assets/video.png");
-const document = require("../assets/document.png");
-const sticker = require("../assets/sticker.png");
-const contacts = require("../assets/contacts.png");
-const location = require("../assets/location.png");
 
 const profilePic = require("../assets/user_pic.png");
 
@@ -86,18 +75,20 @@ export default function CardWA({
 
 					<View style={styles.flexContainer}>
 						{last_message && <View style={styles.card}>
-							{last_message.to && last_message.status === "sent" && <Image source={sent} style={styles.icon} />}
-							{last_message.to && last_message.status === "delivered" && <Image source={delivered} style={styles.icon} />}
-							{last_message.to && last_message.status === "read" && <Image source={read} style={styles.icon} />}
-							{last_message.image && <Image source={image} style={styles.icon} />}
-							{last_message.audio && <Image source={audio} style={styles.icon} />}
-							{last_message.video && <Image source={video} style={styles.icon} />}
-							{last_message.document && <Image source={document} style={styles.icon} />}
-							{last_message.sticker && <Image source={sticker} style={styles.icon} />}
-							{last_message.contacts && <Image source={contacts} style={styles.icon} />}
-							{last_message.location && <Image source={location} style={styles.icon} />}
+							<PreviewIcon render={!last_message.incoming && last_message.status === "sent"} name="check" />
+							<PreviewIcon render={!last_message.incoming && last_message.status === "delivered"} name="check-all" />
+							<PreviewIcon render={!last_message.incoming && last_message.status === "read"} name="check-all" color="#53BDEB" />
+
+							<PreviewIcon render={last_message.image} name="image" />
+							<PreviewIcon render={last_message.audio} name="microphone" />
+							<PreviewIcon render={last_message.video} name="video" />
+							<PreviewIcon render={last_message.document} name="text-box" />
+							<PreviewIcon render={last_message.sticker} name="sticker" />
+							<PreviewIcon render={last_message.contacts} name="account" />
+							<PreviewIcon render={last_message.location} name="google-maps" />
+
 							<Text style={styles.subTitle} numberOfLines={1}>
-								{truncateText(getMessageText(last_message), last_message.to ? 34 : 36)}
+								{truncateText(getMessageText(last_message), last_message.incoming ? 36 : 34)}
 							</Text>
 						</View>}
 						{unread_count > 0 && <Text style={styles.unread} numberOfLines={1}>
@@ -116,50 +107,46 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: "row",
 	},
-	textContainer: {
-		flex: 1,
-		margin: 15,
-		marginRight: 5,
+	date: {
+		color: colors.light,
+		fontSize: 12,
 	},
 	flexContainer: {
 		alignItems: "center",
 		flex: 1,
 		flexDirection: "row",
 		justifyContent: "space-between",
+		paddingBottom: 2,
 	},
 	image: {
-		borderRadius: 25,
-		height: 50,
-		width: 50,
-	},
-	title: {
-		color: colors.strong,
-		fontSize: 17,
-		fontWeight: "bold",
+		borderRadius: 24,
+		height: 48,
+		width: 48,
 	},
 	subTitle: {
 		color: colors.light,
 		fontSize: 14,
+		marginLeft: 5,
 	},
-	icon: {
-		height: 18,
-		marginRight: 5,
-		width: 18,
+	textContainer: {
+		flex: 1,
+		margin: 15,
+		marginRight: 0,
 	},
-	date: {
-		color: colors.light,
-		fontSize: 12,
-	},
-	unreadDate: {
-		color: colors.unread,
+	title: {
+		fontSize: 17,
+		fontWeight: "bold",
 	},
 	unread: {
 		backgroundColor: colors.unread,
 		borderRadius: 10,
 		color: colors.white,
-		fontFamily: "Helvetica",
+		fontFamily: "sans-serif",
 		minWidth: 20,
 		padding: 1,
 		textAlign: "center",
+	},
+	unreadDate: {
+		color: colors.unread,
 	},
 });
