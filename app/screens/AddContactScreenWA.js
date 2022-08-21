@@ -4,7 +4,6 @@ import { StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 
 import AppButton from "../components/AppButton";
 import Screen from "../components/Screen";
-import colors from "../config/colors";
 import http from "../services/client";
 
 function submitForm(navigation, number) {
@@ -19,33 +18,30 @@ function submitForm(navigation, number) {
 export default function AddContactScreenWA({ navigation }) {
 	const [number, setNumber] = useState("");
 	return (
-		<Screen style={styles.container}>
+		<Screen style={styles.container} statusBarColor="#008069">
 			<TouchableOpacity onPress={() => navigation.navigate("WhatsAppInbox")}>
-				<MaterialCommunityIcons style={styles.back} color={colors.whatsapp} name="arrow-left" size={25} />
+				<MaterialCommunityIcons style={styles.back} color="#008069" name="arrow-left" size={25} />
 			</TouchableOpacity>
 			<Text style={styles.text}>
-				Ingrese un nuevo número de teléfono:
+				Agregar nuevo contacto de WhatsApp
 			</Text>
-			<TextInput style={styles.input} placeholder="Ingresar número" value={number} onChangeText={setNumber} />
-			<AppButton text="Agregar número" logo="cellphone" color={colors.whatsapp} onPress={() => submitForm(navigation, number.replace(/\D/g, ""))} />
+			<TextInput style={[styles.input, styles.text]} placeholder="Ingresar número" value={number} onChangeText={setNumber} />
+			<AppButton text="Agregar número" logo="cellphone" color="#008069" onPress={() => submitForm(navigation, number.replace(/\D/g, ""))} />
 		</Screen>
 	);
 }
 
 const styles = StyleSheet.create({
 	back: {
-		marginLeft: 8,
-		marginTop: 8,
+		margin: 8,
 	},
 	container: {
 		flex: 1,
 	},
 	input: {
 		borderColor: "gray",
-		borderRadius: 10,
+		borderRadius: 12,
 		borderWidth: 1,
-		fontSize: 20,
-		margin: 10,
 		padding: 5,
 	},
 	text: {

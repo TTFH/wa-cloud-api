@@ -2,8 +2,8 @@ import { Entypo } from "@expo/vector-icons";
 import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 
-import colors from "../../config/colors";
 import PreviewIcon from "../PreviewIcon";
+import ReplyTo from "./ReplyTo";
 
 const tail_incoming = require("../../assets/tail_incoming.png");
 const tail_outgoing = require("../../assets/tail_outgoing.png");
@@ -15,27 +15,7 @@ function formatTime(timestamp) {
 	return `${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
 }
 
-function getMessageText(message) {
-	if (message.text)
-		return message.text.body;
-	if (message.image)
-		return message.image.caption || "Foto";
-	if (message.audio)
-		return "Audio";
-	if (message.video)
-		return message.video.caption || "Video";
-	if (message.document)
-		return message.document.caption;
-	if (message.sticker)
-		return "Sticker";
-	if (message.contacts)
-		return message.contacts.name;
-	if (message.location)
-		return message.location.name;
-	return "Unimplemented message type";
-}
-
-export default function DialogWA({ message, hasTail }) {
+export default function DialogWA({ caption, message, hasTail }) {
 	return (
 		<View style={[styles.container, !message.incoming ? styles.alignRight : styles.alignLeft]}>
 			{hasTail && message.incoming && <Image style={styles.tail} source={tail_incoming} />}
@@ -43,8 +23,7 @@ export default function DialogWA({ message, hasTail }) {
 
 			<View style={[styles.chat,
 			message.incoming ? styles.colorFrom : styles.colorTo,
-			hasTail && message.incoming && styles.squareCornerFrom,
-			hasTail && !message.incoming && styles.squareCornerTo
+			hasTail && (message.incoming ? styles.squareCornerFrom : styles.squareCornerTo)
 			]}>
 				{message.forwarded &&
 					<View style={styles.inline}>
@@ -54,11 +33,14 @@ export default function DialogWA({ message, hasTail }) {
 						</Text>
 					</View>
 				}
+				{message.reply_to && <ReplyTo isSend={!message.incoming} title={message.reply_to.username} subtitle={message.reply_to.body} />}
+
+				{message.image && <Image style={styles.image} source={message.image.url} />}
+				{caption && <Text style={[styles.chatText, message.incoming ? { paddingRight: 40 } : { paddingRight: 60 }]}>
+					{caption}
+				</Text>}
 				<View style={styles.chatContent}>
-					<Text style={styles.chatText}>
-						{getMessageText(message)}
-					</Text>
-					<Text style={styles.chatTime}>
+					<Text style={[styles.chatTime, caption ? { color: "#667781" } : { color: "#FFFFFF" }]}>
 						{formatTime(message.timestamp)}
 					</Text>
 					<PreviewIcon render={message.status === "delivered"} name="check-all" />
@@ -88,35 +70,42 @@ const styles = StyleSheet.create({
 		padding: 5,
 	},
 	chatContent: {
-		alignItems: "flex-end",
+		bottom: 7,
 		flexDirection: "row",
-		justifyContent: "flex-end",
+		position: "absolute",
+		right: 7,
 	},
 	chatText: {
+		flexGrow: 1,
 		fontSize: 16,
 		marginBottom: 5,
 		marginTop: 0,
 		margin: 5,
+		//paddingRight: 60,
 	},
 	chatTime: {
-		color: colors.wa_dialog_date,
 		fontSize: 13,
 		marginHorizontal: 5,
 	},
 	colorFrom: {
-		backgroundColor: colors.white,
+		backgroundColor: "#FFFFFF",
 	},
 	colorTo: {
-		backgroundColor: colors.wa_dialog_to,
+		backgroundColor: "#E7FFDB",
 	},
 	container: {
 		flex: 1,
 		flexDirection: "row",
 	},
 	forward: {
-		color: colors.wa_dialog_date,
+		color: "#667781",
 		marginBottom: 6,
 		paddingLeft: 6,
+	},
+	image: {
+		borderRadius: 8,
+		height: 144,
+		width: 256,
 	},
 	inline: {
 		flexDirection: "row",

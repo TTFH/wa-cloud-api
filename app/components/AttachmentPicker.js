@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { FlatList, Image, Modal, StyleSheet, TouchableOpacity, View, } from "react-native";
+import { FlatList, Modal, StyleSheet, TouchableOpacity, View, } from "react-native";
 
 import PickerItem from "./PickerItem";
 

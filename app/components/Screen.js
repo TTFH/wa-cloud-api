@@ -1,8 +1,6 @@
 import React from "react";
 import { SafeAreaView, StatusBar, StyleSheet } from "react-native";
 
-import colors from "../config/colors";
-
 function Screen({ children, style, statusBarColor }) {
 	return (
 		<SafeAreaView style={[styles.screen, style]}>
@@ -17,7 +15,7 @@ function Screen({ children, style, statusBarColor }) {
 
 const styles = StyleSheet.create({
 	screen: {
-		backgroundColor: colors.white,
+		backgroundColor: "#FFFFFF",
 		flex: 1,
 	},
 });

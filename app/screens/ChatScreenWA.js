@@ -1,12 +1,10 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
-import { FlatList, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { FlatList, ImageBackground, StyleSheet, Text, View } from "react-native";
 
-import AttachmentPicker from "../components/AttachmentPicker";
 import DialogWA from "../components/Dialog/DialogWA";
 import ChatHeaderWA from "../components/Header/ChatHeaderWA";
+import InputWA from "../components/Input/InputWA";
 import Screen from "../components/Screen";
-import colors from "../config/colors";
 import http from "../services/client";
 
 function formatDate(timestamp) {
@@ -32,71 +30,21 @@ function isSameDay(timestamp1, timestamp2) {
 	return date1.getDate() === date2.getDate() && date1.getMonth() === date2.getMonth() && date1.getFullYear() === date2.getFullYear();
 }
 
-const categories = [
-	{
-		colorTop: "#5157AE",
-		colorBottom: "#5F66CD",
-		icon: "file-document",
-		label: "Documento",
-		value: 1,
-	},
-	{
-		colorTop: "#D3396D",
-		colorBottom: "#EC407A",
-		icon: "video",
-		label: "Video",
-		value: 2,
-	},
-	{
-		colorTop: "#AC44CF",
-		colorBottom: "#BF59CF",
-		icon: "image",
-		label: "Imagen",
-		value: 3,
-	},
-	{
-		colorTop: "#E55E31",
-		colorBottom: "#FC6634",
-		icon: "music",
-		label: "Audio",
-		value: 4,
-	},
-	{
-		colorTop: "#1D9B51",
-		colorBottom: "#20A856",
-		icon: "map",
-		label: "Ubicación",
-		value: 5,
-	},
-	{
-		colorTop: "#0795DC",
-		colorBottom: "#0EABF4",
-		icon: "contacts",
-		label: "Contacto",
-		value: 6,
-	},
-	{
-		colorTop: "#0063CB",
-		colorBottom: "#0070E6",
-		icon: "sticker",
-		label: "Sticker",
-		value: 7,
-	},
-	{
-		colorTop: "#FFA800",
-		colorBottom: "#FFBC38",
-		icon: "gesture-tap-button",
-		label: "Interactivo",
-		value: 8,
-	},
-	{
-		colorTop: "#5525AC",
-		colorBottom: "#673AB7",
-		icon: "message-text",
-		label: "Plantilla",
-		value: 9,
-	},
-];
+function getMessageText(message) {
+	if (message.text)
+		return message.text.body;
+	if (message.image)
+		return message.image.caption;
+	if (message.video)
+		return message.video.caption;
+	if (message.document)
+		return message.document.caption;
+	if (message.contacts)
+		return message.contacts.name;
+	if (message.location)
+		return message.location.name;
+	return "Unimplemented message type";
+}
 
 const test_messages = [
 	{
@@ -120,6 +68,10 @@ const test_messages = [
 		message_id: "3",
 		timestamp: 1660950200,
 		status: "read",
+		reply_to: {
+			username: "Juan Perez",
+			body: "Are you a React Native dev?",
+		},
 		text: {
 			body: "No",
 		},
@@ -137,34 +89,38 @@ const test_messages = [
 		message_id: "5",
 		incoming: true,
 		timestamp: 1660950400,
+		reply_to: {
+			username: "Tú",
+			body: "I flip bits.",
+		},
 		text: {
 			body: "That's fair, hagd",
 		},
 	},
+	{
+		message_id: "6",
+		incoming: true,
+		timestamp: 1660950500,
+		status: "read",
+		image: {
+			caption: "Kitten",
+			url: require("../assets/cat1.jpg"),
+		},
+	},
+	{
+		message_id: "7",
+		timestamp: 1660950600,
+		status: "read",
+		image: {
+			url: require("../assets/cat2.jpg"),
+		},
+	},
 ];
-
-function sendMessage(user_id, text, setInputText, messages, setMessages) {
-	if (text.length > 0) {
-		http.post("message", { channel: "whatsapp", user_id, text }).then(result => {
-			const message = {
-				message_id: result.ok ? result.data : messages.length + 1,
-				to: user_id,
-				status: "delivered",
-				timestamp: Math.floor(Date.now() / 1000),
-				text: {
-					body: text,
-				},
-			};
-			setMessages([...messages, message]);
-			setInputText("");
-		});
-	}
-}
 
 export default function ChatScreenWA({ route, navigation }) {
 	const { user_id, username } = route.params;
 	const [messages, setMessages] = useState([]);
-	const [text, setText] = useState("");
+	const scroll = useRef();
 
 	useEffect(() => {
 		http.get("messages", { user_id }).then(result => {
@@ -176,7 +132,7 @@ export default function ChatScreenWA({ route, navigation }) {
 	}, []);
 
 	return (
-		<Screen style={styles.background} statusBarColor={colors.whatsapp}>
+		<Screen style={styles.background} statusBarColor="#008069">
 			<ChatHeaderWA navigation={navigation} username={username} />
 			<ImageBackground style={styles.backgroundImage}
 				source={require("../assets/background.png")}
@@ -184,6 +140,8 @@ export default function ChatScreenWA({ route, navigation }) {
 			<View style={styles.chatContainer}>
 				<View>
 					<FlatList
+						ref={scroll}
+						onContentSizeChange={() => scroll.current.scrollToEnd()}
 						contentContainerStyle={{ justifyContent: "flex-end" }}
 						data={messages}
 						keyExtractor={(message) => message.message_id}
@@ -191,28 +149,20 @@ export default function ChatScreenWA({ route, navigation }) {
 							<>
 								{(!messages[index - 1] || !isSameDay(messages[index - 1].timestamp, item.timestamp)) &&
 									<Text style={styles.date}> {formatDate(item.timestamp)} </Text>}
-								<DialogWA message={item} hasTail={!messages[index - 1] || messages[index - 1].incoming !== messages[index].incoming} />
+								<DialogWA caption={getMessageText(item)} message={item} hasTail={!messages[index - 1] || messages[index - 1].incoming !== messages[index].incoming} />
 							</>
 						)}
 					/>
 				</View>
 			</View>
-			<View style={styles.inputContainer}>
-				<AttachmentPicker items={categories} />
-				<TextInput style={styles.textInput} placeholder="Mensaje" value={text} onChangeText={setText} />
-				<TouchableOpacity onPress={() => sendMessage(user_id, text, setText, messages, setMessages)} >
-					<View style={styles.sendCircle}>
-						<MaterialCommunityIcons color="#FFFFFF" name="send" size={25} />
-					</View>
-				</TouchableOpacity>
-			</View>
+			<InputWA user_id={user_id} messages={messages} setMessages={setMessages} />
 		</Screen>
 	);
 }
 
 const styles = StyleSheet.create({
 	background: {
-		backgroundColor: colors.wa_chat_bg,
+		backgroundColor: "#EFEAE2",
 	},
 	backgroundImage: {
 		height: "100%",
@@ -228,33 +178,12 @@ const styles = StyleSheet.create({
 	},
 	date: {
 		alignSelf: "center",
-		backgroundColor: colors.white,
+		backgroundColor: "#FFFFFF",
 		borderRadius: 7,
-		color: colors.wa_dialog_date,
+		color: "#667781",
 		fontSize: 12,
 		marginBottom: 8,
 		marginTop: 8,
 		padding: 5,
-	},
-	inputContainer: {
-		alignItems: "center",
-		flexDirection: "row",
-		justifyContent: "space-between",
-		padding: 10,
-		paddingBottom: 5,
-	},
-	sendCircle: {
-		alignItems: "center",
-		backgroundColor: colors.wa_send_button,
-		borderRadius: 22,
-		height: 44,
-		justifyContent: "center",
-		width: 44,
-	},
-	textInput: {
-		backgroundColor: colors.white,
-		borderRadius: 25,
-		padding: 10,
-		width: "75%",
 	},
 });

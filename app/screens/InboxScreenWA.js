@@ -5,7 +5,6 @@ import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import CardWA from "../components/CardWA";
 import InboxHeaderWA from "../components/Header/InboxHeaderWA";
 import Screen from "../components/Screen";
-import colors from "../config/colors";
 import http from "../services/client";
 
 const test_messages = [
@@ -112,7 +111,7 @@ export default function InboxScreenWA({ navigation }) {
 	}, []);
 
 	return (
-		<Screen statusBarColor={colors.whatsapp}>
+		<Screen statusBarColor="#008069">
 			<InboxHeaderWA navigation={navigation} unread={unreadTotal} />
 			<FlatList
 				style={styles.container}
@@ -139,7 +138,7 @@ export default function InboxScreenWA({ navigation }) {
 const styles = StyleSheet.create({
 	chatCircle: {
 		alignItems: "center",
-		backgroundColor: colors.wa_send_button,
+		backgroundColor: "#00A884",
 		borderRadius: 28,
 		bottom: 15,
 		elevation: 5,

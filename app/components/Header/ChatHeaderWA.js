@@ -2,8 +2,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import colors from "../../config/colors";
-
 function truncateText(text, length) {
 	if (text?.length > length + 3)
 		return text.substring(0, length) + "...";
@@ -33,7 +31,7 @@ export default function ChatHeaderWA({ navigation, username }) {
 const styles = StyleSheet.create({
 	flexContainer: {
 		alignItems: "center",
-		backgroundColor: colors.whatsapp,
+		backgroundColor: "#008069",
 		flexDirection: "row",
 		minHeight: "auto",
 	},
@@ -50,7 +48,7 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		alignSelf: "center",
-		color: colors.white,
+		color: "#FFFFFF",
 		fontFamily: "sans-serif",
 		fontSize: 18,
 	},

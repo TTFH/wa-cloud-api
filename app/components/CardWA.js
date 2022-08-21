@@ -1,7 +1,6 @@
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import colors from "../config/colors";
 import PreviewIcon from "./PreviewIcon";
 
 function truncateText(text, length) {
@@ -108,7 +107,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 	},
 	date: {
-		color: colors.light,
+		color: "#667781",
 		fontSize: 12,
 	},
 	flexContainer: {
@@ -124,7 +123,7 @@ const styles = StyleSheet.create({
 		width: 48,
 	},
 	subTitle: {
-		color: colors.light,
+		color: "#667781",
 		fontSize: 14,
 		marginLeft: 5,
 	},
@@ -138,15 +137,15 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 	},
 	unread: {
-		backgroundColor: colors.unread,
+		backgroundColor: "#25D366",
 		borderRadius: 10,
-		color: colors.white,
+		color: "#FFFFFF",
 		fontFamily: "sans-serif",
 		minWidth: 20,
 		padding: 1,
 		textAlign: "center",
 	},
 	unreadDate: {
-		color: colors.unread,
+		color: "#25D366",
 	},
 });

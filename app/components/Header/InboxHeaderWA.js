@@ -2,8 +2,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import colors from "../../config/colors";
-
 export default function InboxHeaderWA({ unread }) {
 	return (
 		<View style={styles.shadow}>
@@ -42,7 +40,7 @@ const styles = StyleSheet.create({
 	},
 	flexContainer: {
 		alignItems: "center",
-		backgroundColor: colors.whatsapp,
+		backgroundColor: "#008069",
 		flexDirection: "row",
 		justifyContent: "space-between",
 		paddingTop: 2,
@@ -73,7 +71,7 @@ const styles = StyleSheet.create({
 		width: "30%",
 	},
 	selectedTabText: {
-		color: colors.white,
+		color: "#FFFFFF",
 		fontFamily: "Roboto",
 		fontSize: 14,
 		fontWeight: "bold",
@@ -83,21 +81,21 @@ const styles = StyleSheet.create({
 		elevation: 5,
 	},
 	title: {
-		color: colors.white,
+		color: "#FFFFFF",
 		fontFamily: "Roboto",
 		fontSize: 20,
 		padding: 15,
 	},
 	underline: {
 		alignSelf: "center",
-		backgroundColor: colors.white,
+		backgroundColor: "#FFFFFF",
 		height: 3,
 		width: "90%",
 	},
 	unread: {
-		backgroundColor: colors.white,
+		backgroundColor: "#FFFFFF",
 		borderRadius: 10,
-		color: colors.whatsapp,
+		color: "#008069",
 		fontFamily: "Roboto",
 		fontSize: 12,
 		minWidth: 20,
