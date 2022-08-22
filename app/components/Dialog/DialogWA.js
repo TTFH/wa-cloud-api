@@ -3,7 +3,9 @@ import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 
 import PreviewIcon from "../PreviewIcon";
+import AudioPlayer from "./AudioPlayer";
 import ReplyTo from "./ReplyTo";
+import VideoPlayer from "./VideoPlayer";
 
 const tail_incoming = require("../../assets/tail_incoming.png");
 const tail_outgoing = require("../../assets/tail_outgoing.png");
@@ -15,7 +17,7 @@ function formatTime(timestamp) {
 	return `${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
 }
 
-export default function DialogWA({ caption, message, hasTail }) {
+export default function DialogWA({ message, hasTail }) {
 	return (
 		<View style={[styles.container, !message.incoming ? styles.alignRight : styles.alignLeft]}>
 			{hasTail && message.incoming && <Image style={styles.tail} source={tail_incoming} />}
@@ -35,16 +37,20 @@ export default function DialogWA({ caption, message, hasTail }) {
 				}
 				{message.reply_to && <ReplyTo isSend={!message.incoming} title={message.reply_to.username} subtitle={message.reply_to.body} />}
 
-				{message.image && <Image style={styles.image} source={message.image.url} />}
-				{caption && <Text style={[styles.chatText, message.incoming ? { paddingRight: 40 } : { paddingRight: 60 }]}>
-					{caption}
+				{message.image && <Image style={styles.image} source={message.image} />}
+				{message.audio && <AudioPlayer source={message.audio} />}
+				{message.video && <VideoPlayer source={message.video} />}
+
+				{message.caption && <Text style={[styles.chatText, message.incoming ? { paddingRight: 40 } : { paddingRight: 60 }]}>
+					{message.caption}
 				</Text>}
+
 				<View style={styles.chatContent}>
-					<Text style={[styles.chatTime, caption ? { color: "#667781" } : { color: "#FFFFFF" }]}>
+					<Text style={[styles.chatTime, !message.audio && !message.caption ? { color: "#FFFFFF" } : { color: "#667781" }]}>
 						{formatTime(message.timestamp)}
 					</Text>
-					<PreviewIcon render={message.status === "delivered"} name="check-all" />
-					<PreviewIcon render={message.status === "read"} name="check-all" color="#53BDEB" />
+					<PreviewIcon render={!message.incoming && message.status === "delivered"} name="check-all" />
+					<PreviewIcon render={!message.incoming && message.status === "read"} name="check-all" color="#53BDEB" />
 				</View>
 			</View>
 
@@ -81,7 +87,6 @@ const styles = StyleSheet.create({
 		marginBottom: 5,
 		marginTop: 0,
 		margin: 5,
-		//paddingRight: 60,
 	},
 	chatTime: {
 		fontSize: 13,
@@ -106,6 +111,7 @@ const styles = StyleSheet.create({
 		borderRadius: 8,
 		height: 144,
 		width: 256,
+		alignSelf: "center",
 	},
 	inline: {
 		flexDirection: "row",

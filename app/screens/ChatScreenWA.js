@@ -1,3 +1,4 @@
+import * as Notifications from "expo-notifications";
 import React, { useEffect, useRef, useState } from "react";
 import { FlatList, ImageBackground, StyleSheet, Text, View } from "react-native";
 
@@ -30,39 +31,19 @@ function isSameDay(timestamp1, timestamp2) {
 	return date1.getDate() === date2.getDate() && date1.getMonth() === date2.getMonth() && date1.getFullYear() === date2.getFullYear();
 }
 
-function getMessageText(message) {
-	if (message.text)
-		return message.text.body;
-	if (message.image)
-		return message.image.caption;
-	if (message.video)
-		return message.video.caption;
-	if (message.document)
-		return message.document.caption;
-	if (message.contacts)
-		return message.contacts.name;
-	if (message.location)
-		return message.location.name;
-	return "Unimplemented message type";
-}
-
 const test_messages = [
 	{
 		message_id: "1",
 		incoming: true,
 		timestamp: 1660950000,
-		text: {
-			body: "Hello!",
-		},
+		caption: "Hello!",
 	},
 	{
 		message_id: "2",
 		incoming: true,
 		timestamp: 1660950100,
 		forwarded: true,
-		text: {
-			body: "Are you a React Native dev?",
-		},
+		caption: "Are you a React Native dev?",
 	},
 	{
 		message_id: "3",
@@ -72,18 +53,14 @@ const test_messages = [
 			username: "Juan Perez",
 			body: "Are you a React Native dev?",
 		},
-		text: {
-			body: "No",
-		},
+		caption: "No",
 	},
 	{
 		message_id: "4",
 		timestamp: 1660950300,
 		status: "delivered",
 		forwarded: true,
-		text: {
-			body: "I flip bits.",
-		},
+		caption: "I flip bits.",
 	},
 	{
 		message_id: "5",
@@ -93,27 +70,46 @@ const test_messages = [
 			username: "Tú",
 			body: "I flip bits.",
 		},
-		text: {
-			body: "That's fair, hagd",
-		},
+		caption: "That's fair, hagd",
 	},
 	{
 		message_id: "6",
 		incoming: true,
 		timestamp: 1660950500,
 		status: "read",
-		image: {
-			caption: "Kitten",
-			url: require("../assets/cat1.jpg"),
-		},
+		caption: "Kitten",
+		image: require("../assets/cat1.jpg"),
 	},
 	{
 		message_id: "7",
 		timestamp: 1660950600,
 		status: "read",
-		image: {
-			url: require("../assets/cat2.jpg"),
-		},
+		image: require("../assets/cat2.jpg"),
+	},
+	{
+		message_id: "8",
+		timestamp: 1660950600,
+		status: "read",
+		audio: require("../assets/rage_your_dream.mp3"),
+	},
+	{
+		message_id: "9",
+		timestamp: 1660950600,
+		incoming: true,
+		audio: require("../assets/rage_your_dream.mp3"),
+	},
+	{
+		message_id: "10",
+		timestamp: 1660950600,
+		status: "read",
+		caption: "Not a cat",
+		video: require("../assets/mechi.mp4"),
+	},
+	{
+		message_id: "11",
+		timestamp: 1660950600,
+		incoming: true,
+		video: require("../assets/mechi.mp4"),
 	},
 ];
 
@@ -130,6 +126,12 @@ export default function ChatScreenWA({ route, navigation }) {
 				setMessages(test_messages);
 		});
 	}, []);
+
+	Notifications.addNotificationReceivedListener(notification => {
+		const notificationData = notification.request.content.data;
+		if (notificationData.user_id === user_id)
+			setMessages([...messages, notificationData.message]);
+	});
 
 	return (
 		<Screen style={styles.background} statusBarColor="#008069">
@@ -149,7 +151,7 @@ export default function ChatScreenWA({ route, navigation }) {
 							<>
 								{(!messages[index - 1] || !isSameDay(messages[index - 1].timestamp, item.timestamp)) &&
 									<Text style={styles.date}> {formatDate(item.timestamp)} </Text>}
-								<DialogWA caption={getMessageText(item)} message={item} hasTail={!messages[index - 1] || messages[index - 1].incoming !== messages[index].incoming} />
+								<DialogWA message={item} hasTail={!messages[index - 1] || messages[index - 1].incoming !== messages[index].incoming} />
 							</>
 						)}
 					/>

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import AddContactScreenWA from "./app/screens/AddContactScreenWA";
 import ChatScreenWA from "./app/screens/ChatScreenWA";
@@ -22,7 +22,7 @@ function getUserToken() {
 	}
 }
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function App() {
 	useEffect(() => {
@@ -32,8 +32,8 @@ export default function App() {
 	return (
 		<NavigationContainer >
 			<Stack.Navigator initialRouteName="WhatsAppInbox" screenOptions={{ headerShown: false }} >
-				<Stack.Screen name="WhatsAppInbox" component={InboxScreenWA} />
-				<Stack.Screen name="ChatWhatsApp" component={ChatScreenWA} />
+				<Stack.Screen name="WhatsAppInbox" component={InboxScreenWA} options={{ orientation: "all" }} />
+				<Stack.Screen name="ChatWhatsApp" component={ChatScreenWA} options={{ orientation: "all" }} />
 				<Stack.Screen name="AddContactWA" component={AddContactScreenWA} />
 			</Stack.Navigator>
 		</NavigationContainer>

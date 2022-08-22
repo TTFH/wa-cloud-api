@@ -1,4 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import * as Notifications from "expo-notifications";
 import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -6,6 +7,7 @@ import CardWA from "../components/CardWA";
 import InboxHeaderWA from "../components/Header/InboxHeaderWA";
 import Screen from "../components/Screen";
 import http from "../services/client";
+import useNotifications from "../services/notifications";
 
 const test_messages = [
 	{
@@ -13,27 +15,28 @@ const test_messages = [
 		username: "Test Number",
 		channel: "whatsapp",
 		unread_count: 1,
-		last_message: {
+		message: {
 			incoming: true,
 			timestamp: 1660950000,
-			text: { body: "Hello, world! 🌎" },
+			caption: "Hello, world! 🌎",
 		},
 	},
 	{
 		user_id: "2",
 		username: "Juan Perez",
 		channel: "whatsapp",
-		last_message: {
+		message: {
 			status: "sent",
 			timestamp: 1660800000,
-			image: { caption: "Look at this kitten 😻" },
+			caption: "Look at this kitten 😻",
+			image: {},
 		},
 	},
 	{
 		user_id: "3",
 		username: "Ninja Turbo",
 		channel: "whatsapp",
-		last_message: {
+		message: {
 			status: "delivered",
 			timestamp: 1660700000,
 			audio: {},
@@ -43,10 +46,11 @@ const test_messages = [
 		user_id: "4",
 		username: "Oka Nieba ✈️",
 		channel: "whatsapp",
-		last_message: {
+		message: {
 			status: "read",
 			timestamp: 1660600000,
-			video: { caption: "Listen to our beautiful voice" },
+			caption: "Listen to our beautiful voice",
+			video: {},
 		},
 	},
 	{
@@ -54,17 +58,18 @@ const test_messages = [
 		username: "Mom ❤️",
 		channel: "whatsapp",
 		unread_count: 5,
-		last_message: {
+		message: {
 			incoming: true,
 			timestamp: 1660500000,
-			document: { caption: "Dinner is ready.txt" },
+			caption: "Dinner is ready.txt",
+			document: {},
 		},
 	},
 	{
 		user_id: "6",
 		username: "Random Dude",
 		channel: "whatsapp",
-		last_message: {
+		message: {
 			incoming: true,
 			timestamp: 1660300000,
 			sticker: {},
@@ -74,20 +79,22 @@ const test_messages = [
 		user_id: "7",
 		username: "Jose Maria Rodriguez",
 		channel: "whatsapp",
-		last_message: {
+		message: {
 			incoming: true,
 			timestamp: 1660200000,
-			contacts: { name: "Juan Perez" },
+			caption: "Juan Perez",
+			contacts: {},
 		},
 	},
 	{
 		user_id: "8",
 		username: "Tommy",
 		channel: "whatsapp",
-		last_message: {
+		message: {
 			incoming: true,
 			timestamp: 1660200000,
-			location: { name: "This place 🗺️ sucks." },
+			caption: "This place 🗺️ sucks.",
+			location: {},
 		},
 	},
 ];
@@ -95,6 +102,7 @@ const test_messages = [
 export default function InboxScreenWA({ navigation }) {
 	const [messages, setMessages] = useState([]);
 	const [unreadTotal, setUnreadTotal] = useState(0);
+	useNotifications();
 
 	useEffect(() => {
 		http.get("conversations").then(result => {
@@ -109,6 +117,12 @@ export default function InboxScreenWA({ navigation }) {
 			setUnreadTotal(total_unread);
 		});
 	}, []);
+
+	Notifications.addNotificationReceivedListener(notification => {
+		const notificationData = notification.request.content.data;
+		const removeDuplicated = messages.filter(item => item.user_id !== notificationData.user_id);
+		setMessages([notificationData, ...removeDuplicated]);
+	});
 
 	return (
 		<Screen statusBarColor="#008069">

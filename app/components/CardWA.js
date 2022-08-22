@@ -10,22 +10,16 @@ function truncateText(text, length) {
 }
 
 function getMessageText(message) {
-	if (message.text)
-		return message.text.body;
+	if (message.caption)
+		return message.caption;
 	if (message.image)
-		return message.image.caption || "Foto";
+		return "Foto";
 	if (message.audio)
 		return "Audio";
 	if (message.video)
-		return message.video.caption || "Video";
-	if (message.document)
-		return message.document.caption;
+		return "Video";
 	if (message.sticker)
 		return "Sticker";
-	if (message.contacts)
-		return message.contacts.name;
-	if (message.location)
-		return message.location.name;
 	return "Unimplemented message type";
 }
 
@@ -52,7 +46,7 @@ const profilePic = require("../assets/user_pic.png");
 export default function CardWA({
 	username,
 	unread_count,
-	last_message,
+	message,
 	onPress
 }) {
 	return (
@@ -67,27 +61,27 @@ export default function CardWA({
 						<Text style={styles.title} numberOfLines={1}>
 							{truncateText(username, 22)}
 						</Text>
-						{last_message && <Text style={[styles.date, unread_count > 0 && styles.unreadDate]}>
-							{formatTime(last_message.timestamp)}
+						{message && <Text style={[styles.date, unread_count > 0 && styles.unreadDate]}>
+							{formatTime(message.timestamp)}
 						</Text>}
 					</View>
 
 					<View style={styles.flexContainer}>
-						{last_message && <View style={styles.card}>
-							<PreviewIcon render={!last_message.incoming && last_message.status === "sent"} name="check" />
-							<PreviewIcon render={!last_message.incoming && last_message.status === "delivered"} name="check-all" />
-							<PreviewIcon render={!last_message.incoming && last_message.status === "read"} name="check-all" color="#53BDEB" />
+						{message && <View style={styles.card}>
+							<PreviewIcon render={!message.incoming && message.status === "sent"} name="check" />
+							<PreviewIcon render={!message.incoming && message.status === "delivered"} name="check-all" />
+							<PreviewIcon render={!message.incoming && message.status === "read"} name="check-all" color="#53BDEB" />
 
-							<PreviewIcon render={last_message.image} name="image" />
-							<PreviewIcon render={last_message.audio} name="microphone" />
-							<PreviewIcon render={last_message.video} name="video" />
-							<PreviewIcon render={last_message.document} name="text-box" />
-							<PreviewIcon render={last_message.sticker} name="sticker" />
-							<PreviewIcon render={last_message.contacts} name="account" />
-							<PreviewIcon render={last_message.location} name="google-maps" />
+							<PreviewIcon render={message.image} name="image" />
+							<PreviewIcon render={message.audio} name="headphones" />
+							<PreviewIcon render={message.video} name="video" />
+							<PreviewIcon render={message.document} name="text-box" />
+							<PreviewIcon render={message.sticker} name="sticker" />
+							<PreviewIcon render={message.contacts} name="account" />
+							<PreviewIcon render={message.location} name="google-maps" />
 
 							<Text style={styles.subTitle} numberOfLines={1}>
-								{truncateText(getMessageText(last_message), last_message.incoming ? 36 : 34)}
+								{truncateText(getMessageText(message), message.incoming ? 36 : 34)}
 							</Text>
 						</View>}
 						{unread_count > 0 && <Text style={styles.unread} numberOfLines={1}>

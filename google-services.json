@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "558014510082",
+    "project_id": "sailbot-app",
+    "storage_bucket": "sailbot-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:558014510082:android:97eb05dd077bd24eb6a31b",
+        "android_client_info": {
+          "package_name": "biz.sailbot.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "558014510082-25grf13jrqmcm6n5rob060ghqs8jnk4o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpjA8tcmIwLFNY-1RCy05o5TvuC3J2YTs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "558014510082-25grf13jrqmcm6n5rob060ghqs8jnk4o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

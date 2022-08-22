@@ -1,6 +1,7 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+
+import IconButton from "../IconButton";
 
 export default function InboxHeaderWA({ unread }) {
 	return (
@@ -10,12 +11,12 @@ export default function InboxHeaderWA({ unread }) {
 					WhatsApp Cloud API
 				</Text>
 				<View style={styles.iconsContainer}>
-					<MaterialCommunityIcons style={styles.button} color="#FFFFFF" name="magnify" size={25} />
-					<MaterialCommunityIcons style={styles.button} color="#FFFFFF" name="dots-vertical" size={25} />
+					<IconButton style={styles.button} color="#FFFFFF" name="magnify" />
+					<IconButton style={styles.button} color="#FFFFFF" name="dots-vertical" />
 				</View>
 			</View>
 			<View style={styles.flexContainer}>
-				<MaterialCommunityIcons style={styles.camera} color="#B4D9D2" name="camera" size={25} />
+				<IconButton style={styles.camera} color="#B4D9D2" name="camera" />
 				<View style={styles.selectedTab} >
 					<View style={styles.inline}>
 						<Text style={styles.selectedTabText}>CHATS</Text>

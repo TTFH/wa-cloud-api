@@ -1,6 +1,7 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
+
+import IconButton from "../IconButton";
 
 function truncateText(text, length) {
 	if (text?.length > length + 3)
@@ -13,9 +14,7 @@ const profilePic = require("../../assets/user_pic.png");
 export default function ChatHeaderWA({ navigation, username }) {
 	return (
 		<View style={styles.flexContainer}>
-			<TouchableOpacity onPress={() => navigation.navigate("WhatsAppInbox")}>
-				<MaterialCommunityIcons color="#FFFFFF" name="arrow-left" size={25} />
-			</TouchableOpacity>
+			<IconButton color="#FFFFFF" name="arrow-left" onPress={() => navigation.navigate("WhatsAppInbox")} />
 			<Image
 				style={styles.image}
 				source={profilePic}
@@ -23,7 +22,7 @@ export default function ChatHeaderWA({ navigation, username }) {
 			<Text style={styles.title} numberOfLines={1}>
 				{truncateText(username, 22)}
 			</Text>
-			<MaterialCommunityIcons style={styles.menuButton} color="#FFFFFF" name="dots-vertical" size={25} />
+			<IconButton style={styles.menuButton} color="#FFFFFF" name="dots-vertical" />
 		</View>
 	);
 }
