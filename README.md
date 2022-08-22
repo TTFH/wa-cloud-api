@@ -14,10 +14,7 @@ If you are using Windows 7 use this version https://nodejs.org/dist/v14.16.1/nod
 and create an Environment variable called: NODE_SKIP_PLATFORM_CHECK and set it to 1  
 
 Open a command prompt at the folder `wa-cloud-api`  
-Install expo with `npm install -g expo-cli`  
 Install the dependencies with the command `npm install` (it will take a while)  
-Move to the folder Server with `cd Server`  
-Install express with `npm install express`  
 
 ## Run the front
 Execute `npm start`  

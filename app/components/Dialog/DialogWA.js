@@ -108,10 +108,10 @@ const styles = StyleSheet.create({
 		paddingLeft: 6,
 	},
 	image: {
+		alignSelf: "center",
 		borderRadius: 8,
 		height: 144,
 		width: 256,
-		alignSelf: "center",
 	},
 	inline: {
 		flexDirection: "row",
