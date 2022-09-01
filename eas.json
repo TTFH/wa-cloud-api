@@ -7,6 +7,9 @@
 			"android": {
 				"buildType": "apk"
 			},
+			"ios": {
+				"simulator": true
+			},
 			"env": { "GOOGLE_SERVICES_FILE": "google-services.json" }
 		},
 		"preview": {},

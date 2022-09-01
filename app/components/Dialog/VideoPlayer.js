@@ -1,6 +1,6 @@
 import { Video } from "expo-av";
 import React, { useState } from "react";
-import { StyleSheet,Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import PreviewIcon from "../PreviewIcon";
 
@@ -23,7 +23,7 @@ export default function VideoPlayer({ source }) {
 				onPlaybackStatusUpdate={status => setStatus(status)}
 			/>
 			<View style={styles.metadata}>
-				<PreviewIcon render={true} name="video" color="#FFFF" />
+				<PreviewIcon render name="video" color="#FFFF" />
 				<Text style={styles.time}>{formatTime(status.durationMillis)}</Text>
 			</View>
 		</View>

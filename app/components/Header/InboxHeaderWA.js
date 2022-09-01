@@ -16,7 +16,7 @@ export default function InboxHeaderWA({ unread }) {
 				</View>
 			</View>
 			<View style={styles.flexContainer}>
-				<IconButton style={styles.camera} color="#B4D9D2" name="camera" />
+				<IconButton style={styles.button} color="#B4D9D2" name="camera" />
 				<View style={styles.selectedTab} >
 					<View style={styles.inline}>
 						<Text style={styles.selectedTabText}>CHATS</Text>
@@ -35,10 +35,6 @@ const styles = StyleSheet.create({
 	button: {
 		margin: 8,
 	},
-	camera: {
-		margin: 6,
-		marginRight: 0,
-	},
 	flexContainer: {
 		alignItems: "center",
 		backgroundColor: "#008069",
@@ -51,7 +47,7 @@ const styles = StyleSheet.create({
 	},
 	inactiveTab: {
 		color: "#B4D9D2",
-		fontFamily: "sans-serif",
+		fontFamily: "Roboto",
 		fontSize: 14,
 		fontWeight: "bold",
 		padding: 12,
@@ -67,7 +63,6 @@ const styles = StyleSheet.create({
 	},
 	selectedTab: {
 		alignItems: "center",
-		flex: 1,
 		flexDirection: "column",
 		width: "30%",
 	},
@@ -76,22 +71,22 @@ const styles = StyleSheet.create({
 		fontFamily: "Roboto",
 		fontSize: 14,
 		fontWeight: "bold",
-		padding: 8,
 	},
 	shadow: {
+		backgroundColor: "#008069",
 		elevation: 5,
 	},
 	title: {
 		color: "#FFFFFF",
 		fontFamily: "Roboto",
 		fontSize: 20,
-		padding: 15,
+		padding: 14,
 	},
 	underline: {
 		alignSelf: "center",
 		backgroundColor: "#FFFFFF",
 		height: 3,
-		width: "90%",
+		width: "100%",
 	},
 	unread: {
 		backgroundColor: "#FFFFFF",
@@ -102,5 +97,6 @@ const styles = StyleSheet.create({
 		minWidth: 20,
 		padding: 1,
 		textAlign: "center",
+		marginLeft: 8,
 	},
 });

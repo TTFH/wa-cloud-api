@@ -5,7 +5,7 @@ const app = express().use(body_parser.json());
 
 const { initDatabase } = require("./database.js");
 const { serverUp, verifyEndpoint } = require("./verification.js");
-const { receiveWhatsApp, sendTextWA } = require("./whatsapp.js");
+const { receiveWhatsApp, sendTextWA, sendTemplateWA } = require("./whatsapp.js");
 const { receiveMessenger, sendTextFB } = require("./messenger.js");
 const { receiveInstagram, sendTextIG } = require("./instagram.js");
 
@@ -25,8 +25,9 @@ function getConversations(req, res) {
 	for (const user_id in database.users) {
 		const user = database.users[user_id];
 		const unread_count = Object.values(database.messages).filter(m => m.from === user_id && m.status !== "read").length;
-		const last_message = Object.values(database.messages).filter(m => m.from === user_id || m.to === user_id).sort((a, b) => b.timestamp - a.timestamp)[0];
-		conversations.push({ user_id, username: user.name, channel: user.channel, profile_pic: user.profile_pic, unread_count, last_message });
+		var message = Object.values(database.messages).filter(m => m.from === user_id || m.to === user_id).sort((a, b) => b.timestamp - a.timestamp)[0];
+		message.incoming = !message.to;
+		conversations.push({ user_id, username: user.name, channel: user.channel, profile_pic: user.profile_pic, unread_count, message });
 	}
 	res.setHeader("Content-Type", "application/json");
 	res.setHeader("Access-Control-Allow-Origin", "*");
@@ -39,6 +40,7 @@ function getMessages(req, res) {
 	for (const message_id in database.messages) {
 		var m = database.messages[message_id];
 		m.message_id = message_id;
+		m.incoming = !m.to;
 		if (m.from === user_id || m.to === user_id)
 			messages.push(m);
 	}
@@ -90,7 +92,7 @@ function addIgAccount(req, res) {
 			}).then(response => {
 				const ig_id = response.data.instagram_business_account.id;
 				console.log("3 " + ig_id);
-				http.get(FB_BASE_URL + ig_id + "?fields=username,profile_picture_url" + "&access_token=" + page_token, {
+				http.get(FB_BASE_URL + ig_id + "?fields=username" + "&access_token=" + page_token, {
 				}).then(response => {
 					const ig_username = response.data.username;
 					console.log("4 " + ig_username);
@@ -124,24 +126,38 @@ function addPhoneNumber(req, res) {
 	res.send(name);
 }
 
+function sendTemplate(req, res) {
+	const phone_number = req.body.phone_number;
+	const template_name = req.body.template_name;
+	const vars = req.body.vars;
+	res.setHeader("Access-Control-Allow-Origin", "*");
+	sendTemplateWA(phone_number, template_name, vars).then(message_id => {
+		res.send(message_id);
+	}).catch(error => {
+		res.sendStatus(error.response.status);
+	});
+}
+
 initDatabase();
 app.listen(PORT, serverUp);
 app.get("/whatsapp", verifyEndpoint);
 app.post("/whatsapp", receiveWhatsApp);
-
+/*
 app.get("/messenger", verifyEndpoint);
 app.post("/messenger", receiveMessenger);
 
 app.get("/instagram", verifyEndpoint);
 app.post("/instagram", receiveInstagram);
-
+*/
 app.get("/conversations", getConversations);
 app.get("/messages", getMessages);
 app.post("/message", sendMessage);
 
+app.post("/template", sendTemplate);
+/*
 app.get("/ig_username", getIgUsername);
 app.put("/add_ig_account", addIgAccount);
-
+*/
 app.put("/add_contact", addPhoneNumber); // TODO: add channel param
 /*
 app.get("/unread_total", getTotalUnread); // TODO: whatsapp only

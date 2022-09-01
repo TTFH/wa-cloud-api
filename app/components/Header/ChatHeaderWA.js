@@ -13,12 +13,9 @@ const profilePic = require("../../assets/user_pic.png");
 
 export default function ChatHeaderWA({ navigation, username }) {
 	return (
-		<View style={styles.flexContainer}>
-			<IconButton color="#FFFFFF" name="arrow-left" onPress={() => navigation.navigate("WhatsAppInbox")} />
-			<Image
-				style={styles.image}
-				source={profilePic}
-			/>
+		<View style={styles.container}>
+			<IconButton style={styles.backButton} color="#FFFFFF" name="arrow-left" onPress={() => navigation.navigate("WhatsAppInbox")} />
+			<Image style={styles.image} source={profilePic} />
 			<Text style={styles.title} numberOfLines={1}>
 				{truncateText(username, 22)}
 			</Text>
@@ -28,18 +25,20 @@ export default function ChatHeaderWA({ navigation, username }) {
 }
 
 const styles = StyleSheet.create({
-	flexContainer: {
+	backButton: {
+		paddingLeft: 6,
+	},
+	container: {
 		alignItems: "center",
 		backgroundColor: "#008069",
 		flexDirection: "row",
-		minHeight: "auto",
 	},
 	image: {
-		borderRadius: 18,
-		height: 36,
+		borderRadius: 17,
+		height: 34,
 		margin: 10,
-		marginLeft: 5,
-		width: 36,
+		marginLeft: 2,
+		width: 34,
 	},
 	menuButton: {
 		marginLeft: "auto",

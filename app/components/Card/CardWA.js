@@ -1,13 +1,7 @@
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import PreviewIcon from "./PreviewIcon";
-
-function truncateText(text, length) {
-	if (text.length > length + 3)
-		return text.substring(0, length) + "...";
-	return text;
-}
+import PreviewIcon from "../PreviewIcon";
 
 function getMessageText(message) {
 	if (message.caption)
@@ -20,6 +14,8 @@ function getMessageText(message) {
 		return "Video";
 	if (message.sticker)
 		return "Sticker";
+	if (message.document)
+		return message.document.filename;
 	return "Unimplemented message type";
 }
 
@@ -41,33 +37,25 @@ function formatTime(timestamp) {
 	return `${day}/${month}/${year}`;
 }
 
-const profilePic = require("../assets/user_pic.png");
+const profilePic = require("../../assets/user_pic.png");
 
-export default function CardWA({
-	username,
-	unread_count,
-	message,
-	onPress
-}) {
+export default function CardWA({ username, unread_count, message, onPress }) {
 	return (
 		<TouchableOpacity onPress={onPress}>
 			<View style={styles.card}>
-				<Image
-					style={styles.image}
-					source={profilePic}
-				/>
+				<Image style={styles.image} source={profilePic} />
 				<View style={styles.textContainer}>
 					<View style={styles.flexContainer}>
 						<Text style={styles.title} numberOfLines={1}>
-							{truncateText(username, 22)}
+							{username}
 						</Text>
-						{message && <Text style={[styles.date, unread_count > 0 && styles.unreadDate]}>
+						<Text style={unread_count > 0 ? styles.unreadDate : styles.date}>
 							{formatTime(message.timestamp)}
-						</Text>}
+						</Text>
 					</View>
 
 					<View style={styles.flexContainer}>
-						{message && <View style={styles.card}>
+						<View style={styles.flexContainer}>
 							<PreviewIcon render={!message.incoming && message.status === "sent"} name="check" />
 							<PreviewIcon render={!message.incoming && message.status === "delivered"} name="check-all" />
 							<PreviewIcon render={!message.incoming && message.status === "read"} name="check-all" color="#53BDEB" />
@@ -81,9 +69,9 @@ export default function CardWA({
 							<PreviewIcon render={message.location} name="google-maps" />
 
 							<Text style={styles.subTitle} numberOfLines={1}>
-								{truncateText(getMessageText(message), message.incoming ? 36 : 34)}
+								{getMessageText(message)}
 							</Text>
-						</View>}
+						</View>
 						{unread_count > 0 && <Text style={styles.unread} numberOfLines={1}>
 							{unread_count}
 						</Text>}
@@ -97,8 +85,8 @@ export default function CardWA({
 const styles = StyleSheet.create({
 	card: {
 		alignItems: "center",
-		flex: 1,
 		flexDirection: "row",
+		margin: 14,
 	},
 	date: {
 		color: "#667781",
@@ -106,7 +94,6 @@ const styles = StyleSheet.create({
 	},
 	flexContainer: {
 		alignItems: "center",
-		flex: 1,
 		flexDirection: "row",
 		justifyContent: "space-between",
 		paddingBottom: 2,
@@ -119,12 +106,10 @@ const styles = StyleSheet.create({
 	subTitle: {
 		color: "#667781",
 		fontSize: 14,
-		marginLeft: 5,
 	},
 	textContainer: {
 		flex: 1,
-		margin: 15,
-		marginRight: 0,
+		marginLeft: 15,
 	},
 	title: {
 		fontSize: 17,
@@ -141,5 +126,6 @@ const styles = StyleSheet.create({
 	},
 	unreadDate: {
 		color: "#25D366",
+		fontSize: 12,
 	},
 });

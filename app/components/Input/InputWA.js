@@ -4,7 +4,6 @@ import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
 import http from "../../services/client";
 import AttachmentPicker from "../AttachmentPicker";
-import ReplyTo from "../Dialog/ReplyTo";
 
 const categories = [
 	{
@@ -80,9 +79,7 @@ function sendMessage(user_id, text, setInputText, messages, setMessages) {
 				to: user_id,
 				status: "delivered",
 				timestamp: Math.floor(Date.now() / 1000),
-				text: {
-					body: text,
-				},
+				caption: text,
 			};
 			setMessages([...messages, message]);
 			setInputText("");
@@ -90,15 +87,23 @@ function sendMessage(user_id, text, setInputText, messages, setMessages) {
 	}
 }
 
-export default function InputWA({ user_id, messages, setMessages }) {
+export default function InputWA({ navigation, username, user_id, messages, setMessages }) {
 	const [text, setText] = useState("");
+
+	function handleAttachment(navigation, label) {
+		if (label === "Plantilla")
+			navigation.navigate("SendTemplate", { username, user_id });
+		else
+			console.log(label);
+	}
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.input}>
 				{/*<ReplyTo title="+1 (555) 067-2124" subtitle="Esta es una prueba" hasClose />*/}
 				<View style={styles.row}>
 					<TextInput style={styles.textInput} placeholder="Mensaje" multiline value={text} onChangeText={setText} />
-					<AttachmentPicker items={categories} />
+					<AttachmentPicker items={categories} onPress={label => handleAttachment(navigation, label)} />
 				</View>
 			</View>
 			<TouchableOpacity onPress={() => sendMessage(user_id, text, setText, messages, setMessages)} >
@@ -118,7 +123,8 @@ const styles = StyleSheet.create({
 	},
 	input: {
 		backgroundColor: "#FFFFFF",
-		borderRadius: 18,
+		borderRadius: 25,
+		elevation: 1,
 		flex: 1,
 		marginRight: 8,
 		padding: 10,
@@ -131,6 +137,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		backgroundColor: "#00A884",
 		borderRadius: 22,
+		elevation: 3,
 		height: 44,
 		justifyContent: "center",
 		marginBottom: 2,
@@ -139,5 +146,6 @@ const styles = StyleSheet.create({
 	textInput: {
 		flex: 1,
 		fontSize: 16,
+		marginLeft: 5,
 	},
 });

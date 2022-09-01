@@ -20,7 +20,7 @@ export default function AudioPlayer({ source }) {
 	async function loadSound() {
 		const { sound } = await Audio.Sound.createAsync(source);
 		const { durationMillis } = await sound.getStatusAsync();
-		setDuration(durationMillis);
+		setDuration(isNaN(durationMillis) ? 0 : durationMillis);
 		sound.setOnPlaybackStatusUpdate(status => {
 			setIsPlaying(status.isPlaying);
 			setPosition(status.positionMillis);
@@ -48,7 +48,7 @@ export default function AudioPlayer({ source }) {
 	}, [sound]);
 
 	return (
-		<View>
+		<>
 			<View style={styles.container}>
 				{!sound && <IconButton name="download-circle-outline" size={35} onPress={loadSound} />}
 				{sound && !isPlaying && <IconButton name="play" size={35} onPress={playSound} />}
@@ -56,7 +56,7 @@ export default function AudioPlayer({ source }) {
 				<View style={styles.slider}>
 					<Slider
 						minimumValue={0}
-						maximumValue={duration}
+						//maximumValue={duration}
 						value={position}
 						tapToSeek
 						thumbTintColor="#009DE2"
@@ -68,7 +68,7 @@ export default function AudioPlayer({ source }) {
 			<Text style={styles.time}>
 				{formatTime(position)} / {formatTime(duration)}
 			</Text>
-		</View>
+		</>
 	);
 }
 

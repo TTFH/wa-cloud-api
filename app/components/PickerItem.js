@@ -8,8 +8,8 @@ export default function PickerItem({ item, onPress }) {
 		<View style={styles.container}>
 			<TouchableOpacity onPress={onPress}>
 				<PickerIcon
-					colorTop={item.colorTop}
-					colorBottom={item.colorBottom}
+					colorTop={item.disabled ? "grey" : item.colorTop}
+					colorBottom={item.disabled ? "lightgrey" : item.colorBottom}
 					name={item.icon}
 				/>
 			</TouchableOpacity>

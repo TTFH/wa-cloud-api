@@ -1,10 +1,17 @@
-import { Entypo } from "@expo/vector-icons";
 import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 
 import PreviewIcon from "../PreviewIcon";
 import AudioPlayer from "./AudioPlayer";
+import Contact from "./Contact";
+import Document from "./Document";
+import Forward from "./Forward";
+import ImagePreview from "./ImagePreview";
+import Interactive from "./Interactive";
+import Location from "./Location";
+//import Markdown from "./Markdown";
 import ReplyTo from "./ReplyTo";
+import Sticker from "./Sticker";
 import VideoPlayer from "./VideoPlayer";
 
 const tail_incoming = require("../../assets/tail_incoming.png");
@@ -18,45 +25,57 @@ function formatTime(timestamp) {
 }
 
 export default function DialogWA({ message, hasTail }) {
+	if (!message) return null;
+	if (message.template) {
+		const caption = "Hello {{1}}, this is a test message with a button. For some reason Spanish was not available.";
+		const buttons = ["Clickeame!"];
+		message.caption = caption.replace("{{1}}", message.template.vars[0]);
+		message.interactive = { buttons };
+	}
+	hasTail = hasTail && !message.sticker;
+
 	return (
-		<View style={[styles.container, !message.incoming ? styles.alignRight : styles.alignLeft]}>
-			{hasTail && message.incoming && <Image style={styles.tail} source={tail_incoming} />}
-			{!hasTail && message.incoming && <View style={styles.tail} />}
+		<>
+			{message.sticker && <Sticker isSend={!message.incoming} source={message.sticker} />}
+			<View style={[styles.container, !message.incoming ? styles.alignRight : styles.alignLeft]}>
+				{hasTail && message.incoming && <Image style={styles.tail} source={tail_incoming} />}
+				{!hasTail && message.incoming && <View style={styles.tail} />}
 
-			<View style={[styles.chat,
-			message.incoming ? styles.colorFrom : styles.colorTo,
-			hasTail && (message.incoming ? styles.squareCornerFrom : styles.squareCornerTo)
-			]}>
-				{message.forwarded &&
-					<View style={styles.inline}>
-						<Entypo name="forward" color="#8696A0" size={18} />
-						<Text style={styles.forward}>
-							Reenviado
+				<View style={[styles.chat,
+				message.incoming ? styles.colorFrom : styles.colorTo,
+				hasTail && (message.incoming ? styles.squareCornerFrom : styles.squareCornerTo),
+				message.sticker && styles.stickerMargin,
+				]}>
+					{message.forwarded && <Forward />}
+					{message.reply_to && <ReplyTo isSend={!message.incoming} title={message.reply_to.username} subtitle={message.reply_to.body} />}
+
+					{message.image && <ImagePreview source={message.image} />}
+					{message.audio && <AudioPlayer source={message.audio} />}
+					{message.video && <VideoPlayer source={message.video} />}
+					{message.document && <Document isSend={!message.incoming} source={message.document} />}
+
+					{message.contacts && <Contact source={message.contacts} />}
+					{message.location && <Location source={message.location} />}
+
+					{message.caption && <Text style={[styles.chatText, message.incoming ? { paddingRight: 40 } : { paddingRight: 60 }]}>
+						{message.caption}
+					</Text>}
+
+					<View style={styles.chatContent}>
+						<Text style={[styles.chatTime, !message.caption && (message.image || message.video) ? { color: "#FFFFFF" } : { color: "#667781" }]}>
+							{formatTime(message.timestamp)}
 						</Text>
+						<PreviewIcon render={!message.incoming && message.status === "sent"} name="check" />
+						<PreviewIcon render={!message.incoming && message.status === "delivered"} name="check-all" />
+						<PreviewIcon render={!message.incoming && message.status === "read"} name="check-all" color="#53BDEB" />
 					</View>
-				}
-				{message.reply_to && <ReplyTo isSend={!message.incoming} title={message.reply_to.username} subtitle={message.reply_to.body} />}
-
-				{message.image && <Image style={styles.image} source={message.image} />}
-				{message.audio && <AudioPlayer source={message.audio} />}
-				{message.video && <VideoPlayer source={message.video} />}
-
-				{message.caption && <Text style={[styles.chatText, message.incoming ? { paddingRight: 40 } : { paddingRight: 60 }]}>
-					{message.caption}
-				</Text>}
-
-				<View style={styles.chatContent}>
-					<Text style={[styles.chatTime, !message.audio && !message.caption ? { color: "#FFFFFF" } : { color: "#667781" }]}>
-						{formatTime(message.timestamp)}
-					</Text>
-					<PreviewIcon render={!message.incoming && message.status === "delivered"} name="check-all" />
-					<PreviewIcon render={!message.incoming && message.status === "read"} name="check-all" color="#53BDEB" />
 				</View>
-			</View>
 
-			{!message.incoming && hasTail && <Image style={styles.tail} source={tail_outgoing} />}
-			{!message.incoming && !hasTail && <View style={styles.tail} />}
-		</View>
+				{hasTail && !message.incoming && <Image style={styles.tail} source={tail_outgoing} />}
+				{!hasTail && !message.incoming && <View style={styles.tail} />}
+			</View>
+			{message.interactive && <Interactive isSend={!message.incoming} source={message.interactive} />}
+		</>
 	);
 }
 
@@ -72,10 +91,12 @@ const styles = StyleSheet.create({
 	chat: {
 		borderRadius: 12,
 		marginBottom: 4,
-		maxWidth: "75%",
+		maxWidth: "82%",
+		minHeight: 30,
 		padding: 5,
 	},
 	chatContent: {
+		alignSelf: "flex-end",
 		bottom: 7,
 		flexDirection: "row",
 		position: "absolute",
@@ -94,26 +115,13 @@ const styles = StyleSheet.create({
 	},
 	colorFrom: {
 		backgroundColor: "#FFFFFF",
+		minWidth: 55,
 	},
 	colorTo: {
 		backgroundColor: "#E7FFDB",
+		minWidth: 75,
 	},
 	container: {
-		flex: 1,
-		flexDirection: "row",
-	},
-	forward: {
-		color: "#667781",
-		marginBottom: 6,
-		paddingLeft: 6,
-	},
-	image: {
-		alignSelf: "center",
-		borderRadius: 8,
-		height: 144,
-		width: 256,
-	},
-	inline: {
 		flexDirection: "row",
 	},
 	squareCornerFrom: {
@@ -121,6 +129,9 @@ const styles = StyleSheet.create({
 	},
 	squareCornerTo: {
 		borderTopRightRadius: 0,
+	},
+	stickerMargin: {
+		marginLeft: 66,
 	},
 	tail: {
 		alignSelf: "flex-start",

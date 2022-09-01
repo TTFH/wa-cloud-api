@@ -1,21 +1,17 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { FlatList, Modal, StyleSheet, TouchableOpacity, View, } from "react-native";
+import { FlatList, Modal, StyleSheet, View, } from "react-native";
 
+import IconButton from "./IconButton";
 import PickerItem from "./PickerItem";
 
-export default function AttachmentPicker({ items }) {
+export default function AttachmentPicker({ items, onPress }) {
 	const [modalVisible, setModalVisible] = useState(false);
 	return (
 		<>
-			<TouchableOpacity onPress={() => setModalVisible(true)}>
-				<MaterialCommunityIcons style={styles.rotate} color="#8696A0" name="attachment" size={25} />
-			</TouchableOpacity>
-			<Modal visible={modalVisible} animationType="slide" transparent={true}>
+			<IconButton style={styles.rotate} name="attachment" onPress={() => setModalVisible(true)} />
+			<Modal visible={modalVisible} animationType="slide" transparent>
 				<View style={styles.modal}>
-					<TouchableOpacity style={styles.close} onPress={() => setModalVisible(false)}>
-						<MaterialCommunityIcons color="#8696A0" name="close" size={25} />
-					</TouchableOpacity>
+					<IconButton style={styles.close} name="close" onPress={() => setModalVisible(false)} />
 					<FlatList
 						data={items}
 						keyExtractor={(item) => item.value.toString()}
@@ -26,7 +22,7 @@ export default function AttachmentPicker({ items }) {
 								label={item.label}
 								onPress={() => {
 									setModalVisible(false);
-									console.log(item.label);
+									onPress(item.label);
 								}}
 							/>
 						)}
@@ -47,7 +43,7 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 		backgroundColor: "white",
 		borderRadius: 10,
-		top: "24%",
+		top: "23%",
 		width: "95%",
 	},
 	rotate: {

@@ -6,6 +6,7 @@ import AddContactScreenWA from "./app/screens/AddContactScreenWA";
 import ChatScreenWA from "./app/screens/ChatScreenWA";
 import InboxScreenWA from "./app/screens/InboxScreenWA";
 import http from "./app/services/client";
+import SendTemplateScreen from "./app/screens/SendTemplateScreen";
 
 // npm start
 // eslint --ext .js app/ --fix
@@ -34,7 +35,8 @@ export default function App() {
 			<Stack.Navigator initialRouteName="WhatsAppInbox" screenOptions={{ headerShown: false }} >
 				<Stack.Screen name="WhatsAppInbox" component={InboxScreenWA} options={{ orientation: "all" }} />
 				<Stack.Screen name="ChatWhatsApp" component={ChatScreenWA} options={{ orientation: "all" }} />
-				<Stack.Screen name="AddContactWA" component={AddContactScreenWA} />
+				<Stack.Screen name="AddContactWA" component={AddContactScreenWA} options={{ orientation: "all" }} />
+				<Stack.Screen name="SendTemplate" component={SendTemplateScreen} options={{ orientation: "all" }} />
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

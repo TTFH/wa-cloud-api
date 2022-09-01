@@ -5,7 +5,7 @@ const Expo = require("expo-server-sdk").default;
 // optionally providing an access token if you have enabled push security
 const expo = new Expo();
 
-const somePushTokens = ["ExponentPushToken[***]"];
+const somePushTokens = ["ExponentPushToken[aaVg3KG8UvqAnRZHXr_Jg6]"];
 
 // Create the messages that you want to send to clients
 let messages = [];
@@ -67,7 +67,7 @@ let tickets = [];
 })();
 
 console.log("Waiting...");
-(async () => { await new Promise(resolve => setTimeout(resolve, 5000)); });
+(async () => { await new Promise(resolve => setTimeout(resolve, 30000)); });
 console.log("Done!");
 
 // Later, after the Expo push notification service has delivered the

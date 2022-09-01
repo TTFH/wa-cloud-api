@@ -1,3 +1,4 @@
+const fs = require("fs");
 const http = require("axios").default;
 
 const FB_BASE_URL = "https://graph.facebook.com/v14.0/";
@@ -17,8 +18,9 @@ function downloadMedia(media_id) {
 				Authorization: "Bearer " + WHATSAPP_TOKEN,
 			},
 		}).then(response => {
-			const filename = response.headers["Content-Disposition"].split("filename=")[1];
-			const path = media_id + "_" + filename;
+			const header = response.headers["content-disposition"];
+			const filename = header.split("filename=")[1];
+			const path = "media/" + media_id + "_" + filename;
 			response.data.pipe(fs.createWriteStream(path)).on("finish", () => {
 				console.log(filename + " downloaded.");
 				database.media[media_id] = { path };
@@ -49,14 +51,23 @@ function receiveWhatsApp(req, res) {
 			status: "delivered",
 		};
 
-		if (message.context)
+		if (message.context) {
 			console.log("Received reply-to message " + message.context.id);
+			const reply_to = database.messages[message.context.id];
+			if (reply_to) {
+				database.messages[message_id].reply_to = {
+					username: database.users[reply_to.from || reply_to.to].name,
+					body: reply_to.caption || reply_to.template.name,
+				};
+			}
+		}
 		if (message.referral)
 			console.log("Received referral: " + message.referral.body);
 
 		if (message.type === "text") {
 			const msg_body = message.text.body;
-			database.messages[message_id].text = { body: msg_body };
+			//database.messages[message_id].text = { body: msg_body };
+			database.messages[message_id].caption = msg_body;
 		} else if (message.type === "image") {
 			const image_id = message.image.id;
 			const caption = message.image.caption;
@@ -75,15 +86,17 @@ function receiveWhatsApp(req, res) {
 			const caption = message.document.caption;
 			const document_id = message.document.id;
 			downloadMedia(document_id);
-			database.messages[message_id].document = { caption, media_id: document_id };
+			//database.messages[message_id].document = { caption, media_id: document_id };
+			database.messages[message_id].document = { filename: caption, size: 0, uri: document_id };
 		} else if (message.type === "sticker") {
 			const sticker_id = message.sticker.id;
 			downloadMedia(sticker_id);
 			database.messages[message_id].sticker = { media_id: sticker_id };
 		} else if (message.type === "button") {
-			const text = message.button.text;
+			const button_text = message.button.text;
 			//const payload = message.button.payload;
-			database.messages[message_id].button = { text };
+			//database.messages[message_id].button = { text: button_text };
+			database.messages[message_id].caption = button_text;
 		} else if (message.type === "interactive") {
 			if (message.interactive.type === "button_reply") {
 				//const id = message.interactive.button_reply.id;
@@ -107,7 +120,6 @@ function receiveWhatsApp(req, res) {
 			console.log("Unkown message type: " + message.type);
 		}
 	}
-
 	database.update();
 	res.sendStatus(200);
 }
@@ -130,8 +142,8 @@ function sendTextWA(phone_number, text_msg) {
 				database.messages[message_id] = {
 					to: phone_number,
 					timestamp: Math.floor(Date.now() / 1000),
-					status: "sent",
-					text: { body: text_msg },
+					status: "delivered",
+					caption: text_msg,
 				};
 				database.update();
 				resolve(message_id);
@@ -142,4 +154,53 @@ function sendTextWA(phone_number, text_msg) {
 	});
 }
 
-module.exports = { receiveWhatsApp, sendTextWA };
+function sendTemplateWA(phone_number, template_name, vars) {
+	return new Promise((resolve, reject) => {
+		var req_body = {
+			messaging_product: "whatsapp",
+			to: phone_number,
+			type: "template",
+			template: {
+				name: template_name,
+				language: {
+					policy: "deterministic",
+					code: "en_US",
+				},
+				components: [{
+					type: "body",
+					parameters: [],
+				}],
+			}
+		};
+		vars.forEach(var1 => {
+			req_body.template.components[0].parameters.push({
+				type: "text",
+				text: var1,
+			});
+		});
+
+		http.post(FB_BASE_URL + PHONE_NUMBER_ID + "/messages",
+			req_body, {
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": "Bearer " + WHATSAPP_TOKEN,
+			}
+		}).then(response => {
+			if (response.data.messages) {
+				const message_id = response.data.messages[0].id;
+				database.messages[message_id] = {
+					to: phone_number,
+					timestamp: Math.floor(Date.now() / 1000),
+					status: "delivered",
+					template: { name: template_name, vars: vars },
+				};
+				database.update();
+				resolve(message_id);
+			}
+		}).catch(error => {
+			reject(error);
+		});
+	});
+}
+
+module.exports = { receiveWhatsApp, sendTextWA, sendTemplateWA };

@@ -3,7 +3,7 @@ import * as Notifications from "expo-notifications";
 import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 
-import CardWA from "../components/CardWA";
+import CardWA from "../components/Card/CardWA";
 import InboxHeaderWA from "../components/Header/InboxHeaderWA";
 import Screen from "../components/Screen";
 import http from "../services/client";
@@ -128,16 +128,12 @@ export default function InboxScreenWA({ navigation }) {
 		<Screen statusBarColor="#008069">
 			<InboxHeaderWA navigation={navigation} unread={unreadTotal} />
 			<FlatList
-				style={styles.container}
 				data={messages}
 				keyExtractor={(message) => message.user_id}
 				renderItem={({ item }) => (
-					<>
-						{item.channel === "whatsapp" && <CardWA
-							{...item}
-							onPress={() => navigation.navigate("ChatWhatsApp", { user_id: item.user_id, username: item.username })}
-						/>}
-					</>
+					<CardWA {...item}
+						onPress={() => navigation.navigate("ChatWhatsApp", { user_id: item.user_id, username: item.username })}
+					/>
 				)}
 			/>
 			<TouchableOpacity onPress={() => navigation.navigate("AddContactWA")}>
@@ -161,9 +157,6 @@ const styles = StyleSheet.create({
 		position: "absolute",
 		right: 15,
 		width: 56,
-	},
-	container: {
-		paddingHorizontal: 15,
 	},
 	flipX: {
 		transform: [{ scaleX: -1 }],

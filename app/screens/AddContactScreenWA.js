@@ -18,7 +18,7 @@ function submitForm(navigation, number) {
 export default function AddContactScreenWA({ navigation }) {
 	const [number, setNumber] = useState("");
 	return (
-		<Screen style={styles.container} statusBarColor="#008069">
+		<Screen statusBarColor="#008069">
 			<TouchableOpacity onPress={() => navigation.navigate("WhatsAppInbox")}>
 				<MaterialCommunityIcons style={styles.back} color="#008069" name="arrow-left" size={25} />
 			</TouchableOpacity>
@@ -26,7 +26,7 @@ export default function AddContactScreenWA({ navigation }) {
 				Agregar nuevo contacto de WhatsApp
 			</Text>
 			<TextInput style={[styles.input, styles.text]} placeholder="Ingresar número" value={number} onChangeText={setNumber} />
-			<AppButton text="Agregar número" logo="cellphone" color="#008069" onPress={() => submitForm(navigation, number.replace(/\D/g, ""))} />
+			<AppButton text="Agregar número" logo="cellphone" color="#008069" whiteText onPress={() => submitForm(navigation, number.replace(/\D/g, ""))} />
 		</Screen>
 	);
 }
@@ -34,9 +34,6 @@ export default function AddContactScreenWA({ navigation }) {
 const styles = StyleSheet.create({
 	back: {
 		margin: 8,
-	},
-	container: {
-		flex: 1,
 	},
 	input: {
 		borderColor: "gray",

@@ -1,6 +1,7 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Notifications from "expo-notifications";
 import React, { useEffect, useRef, useState } from "react";
-import { FlatList, ImageBackground, StyleSheet, Text, View } from "react-native";
+import { FlatList, ImageBackground, StyleSheet, Text, TouchableHighlight, View } from "react-native";
 
 import DialogWA from "../components/Dialog/DialogWA";
 import ChatHeaderWA from "../components/Header/ChatHeaderWA";
@@ -74,42 +75,142 @@ const test_messages = [
 	},
 	{
 		message_id: "6",
-		incoming: true,
 		timestamp: 1660950500,
 		status: "read",
-		caption: "Kitten",
-		image: require("../assets/cat1.jpg"),
+		image: require("../assets/cat.jpg"),
 	},
 	{
 		message_id: "7",
+		incoming: true,
 		timestamp: 1660950600,
 		status: "read",
-		image: require("../assets/cat2.jpg"),
+		caption: "_Some *cats* under a solar eclipse_ *cool,* right?",
+		image: require("../assets/cat.jpg"),
 	},
 	{
 		message_id: "8",
-		timestamp: 1660950600,
+		timestamp: 1660950700,
 		status: "read",
 		audio: require("../assets/rage_your_dream.mp3"),
 	},
 	{
 		message_id: "9",
-		timestamp: 1660950600,
+		timestamp: 1660950800,
 		incoming: true,
 		audio: require("../assets/rage_your_dream.mp3"),
 	},
 	{
 		message_id: "10",
-		timestamp: 1660950600,
+		timestamp: 1660950900,
 		status: "read",
 		caption: "Not a cat",
 		video: require("../assets/mechi.mp4"),
 	},
 	{
 		message_id: "11",
-		timestamp: 1660950600,
+		timestamp: 1660951000,
 		incoming: true,
 		video: require("../assets/mechi.mp4"),
+	},
+	{
+		message_id: "12",
+		timestamp: 1660951100,
+		status: "read",
+		caption: "1",
+	},
+	{
+		message_id: "13",
+		timestamp: 1660951200,
+		incoming: true,
+		caption: "2",
+	},
+	{
+		message_id: "14",
+		timestamp: 1660951300,
+		status: "read",
+		document: {
+			filename: "test_document.pdf",
+			size: 49152,
+			uri: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+		},
+	},
+	{
+		message_id: "15",
+		timestamp: 1660951400,
+		incoming: true,
+		document: {
+			filename: "example_test_file.pdf",
+			size: 123456,
+			uri: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+		},
+	},
+	{
+		message_id: "16",
+		timestamp: 1660951500,
+		status: "read",
+		sticker: require("../assets/this_is_fine.webp"),
+	},
+	{
+		message_id: "17",
+		timestamp: 1660951600,
+		incoming: true,
+		sticker: require("../assets/this_is_fine.webp"),
+	},
+	{
+		message_id: "18",
+		timestamp: 1660951700,
+		status: "read",
+		contacts: { name: "Juan Perez" },
+	},
+	{
+		message_id: "19",
+		timestamp: 1660951800,
+		incoming: true,
+		contacts: { name: "Juan Perez" },
+	},
+	{
+		message_id: "20",
+		timestamp: 1660951900,
+		status: "read",
+		location: { name: "Antel Arena", address: "Airstrike target" },
+	},
+	{
+		message_id: "21",
+		timestamp: 1660952000,
+		incoming: true,
+		location: { name: "Antel Arena", address: "Airstrike target" },
+	},
+	{
+		message_id: "22",
+		timestamp: 1660952100,
+		status: "read",
+		caption: "normal _italic_ *bold* ~strikethrough~ ```monospace``` http://example.com/",
+	},
+	{
+		message_id: "23",
+		timestamp: 1660952200,
+		incoming: true,
+		caption: "Hello {{1}} this is a test message.",
+		interactive: { var1: "Juan", call: "Llamar", web: "Visitar web", list: "Configurar" },
+	},
+	{
+		message_id: "24",
+		timestamp: 1660952300,
+		incoming: true,
+		caption: "Meeting!",
+		interactive: { buttons: ["Ok", "Sleep"] },
+	},
+	{
+		message_id: "25",
+		timestamp: 1660952400,
+		status: "read",
+		template: { vars: ["<username>"] },
+	},
+	{
+		message_id: "26",
+		status: "delivered",
+		timestamp: 1660952500,
+		caption: "123456789012345678901234567890",
 	},
 ];
 
@@ -140,7 +241,7 @@ export default function ChatScreenWA({ route, navigation }) {
 				source={require("../assets/background.png")}
 			/>
 			<View style={styles.chatContainer}>
-				<View>
+				<View style={styles.scroll}>
 					<FlatList
 						ref={scroll}
 						onContentSizeChange={() => scroll.current.scrollToEnd()}
@@ -157,7 +258,14 @@ export default function ChatScreenWA({ route, navigation }) {
 					/>
 				</View>
 			</View>
-			<InputWA user_id={user_id} messages={messages} setMessages={setMessages} />
+
+			<TouchableHighlight onPress={() => scroll.current.scrollToEnd()}>
+				<View style={styles.scrollDown}>
+					<MaterialCommunityIcons color="#8696A0" name="chevron-double-down" size={25} />
+				</View>
+			</TouchableHighlight>
+
+			<InputWA navigation={navigation} user_id={user_id} username={username} messages={messages} setMessages={setMessages} />
 		</Screen>
 	);
 }
@@ -187,5 +295,21 @@ const styles = StyleSheet.create({
 		marginBottom: 8,
 		marginTop: 8,
 		padding: 5,
+	},
+	scroll: {
+		maxHeight: "100%",
+		overflow: "scroll",
+	},
+	scrollDown: {
+		alignItems: "center",
+		backgroundColor: "#FFFFFFAF",
+		borderRadius: 16,
+		bottom: 5,
+		elevation: 1,
+		height: 32,
+		justifyContent: "center",
+		position: "absolute",
+		right: 15,
+		width: 32,
 	},
 });
